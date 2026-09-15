@@ -30,6 +30,10 @@ public class ReceivedPacketHandler {
 
             // 10tickの連射防止クールダウンチェック
             if (player.getCooldowns().isOnCooldown(boots)) return;
+            // 水、マグマでは実行不可
+            if (player.isInLiquid() || player.isInPowderSnow) return;
+            // 滑空中はjumpモードは実行不可
+            if (player.isFallFlying() && payload.request()) return;
 
             UUID playerId = player.getUUID();
             int currentCount = LUNGE_COUNTS.getOrDefault(playerId, 0);
@@ -38,6 +42,8 @@ public class ReceivedPacketHandler {
             if (currentCount >= level + 1) {
                 return;
             }
+
+            if (currentCount == 0) player.trackStartFallingPosition();
 
             Vec3 lungeVelocity;
 
