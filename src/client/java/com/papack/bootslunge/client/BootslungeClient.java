@@ -10,9 +10,6 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockState;
 import org.lwjgl.glfw.GLFW;
 
 public class BootslungeClient implements ClientModInitializer {
@@ -21,8 +18,9 @@ public class BootslungeClient implements ClientModInitializer {
     public static final String KEY_DESC_BOOT_LUNGE = "key.desc.bootlunge.lunge_key";
 
     public static KeyMapping LUNGE_KEY;
-    private static boolean wasJumpPressed = false; // 連打防止用フラグ
 
+    private static boolean wasJumpPressed = false;
+    private static int offGroundTicks = 0; // 空中にいる時間をカウント
 
     @Override
     public void onInitializeClient() {
@@ -38,21 +36,25 @@ public class BootslungeClient implements ClientModInitializer {
 
             if (!(client.player instanceof LocalPlayer player)) return;
 
+            // 1. LUNGE_KEY の処理
             while (LUNGE_KEY.consumeClick()) {
                 ClientPlayNetworking.send(new LungePacketPayload(false));
-
             }
 
-            // 2. 空中ジャンプ（JumpKey）の処理
+            // 2. 空中時間のカウント処理
+            if (player.onGround()) {
+                offGroundTicks = 0;
+            } else {
+                offGroundTicks++;
+            }
+
+            // 3. 空中ジャンプ（JumpKey）の処理
             boolean isJumpPressed = client.options.keyJump.isDown();
 
-            if (!player.onGround()) {
-
-                Level level = player.level();
-                BlockState blockState = level.getBlockState(player.blockPosition().below());
-
-                // 空中で「今キーが押され、直前は押されていなかった」瞬間に発動
-                if (isJumpPressed && !wasJumpPressed && blockState.is(Blocks.AIR)) {
+            // 「今キーが押された瞬間」かつ「空中に3Tick（約0.15秒）以上いる時」のみ許可
+            // 地上ジャンプ直後の誤暴発を完全回避します
+            if (isJumpPressed && !wasJumpPressed) {
+                if (!player.onGround() && offGroundTicks >= 3) {
                     ClientPlayNetworking.send(new LungePacketPayload(true));
                 }
             }

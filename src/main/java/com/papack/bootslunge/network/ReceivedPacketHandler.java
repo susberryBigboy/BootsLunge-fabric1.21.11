@@ -51,7 +51,7 @@ public class ReceivedPacketHandler {
 
                 // 空中ジャンプ: 上向き（Y軸）のみに固定強度のベクトルを生成
                 // 上向きの強さは調整可能です（例: 0.45〜0.6 程度がバニラジャンプと同等）
-                double jumpStrength = 0.8 + (level * 0.3);  // 少しだけ弱め
+                double jumpStrength = 0.8 + (level * 0.4) + (currentCount * 0.1);
                 lungeVelocity = new Vec3(0, jumpStrength, 0);
 
                 player.resetFallDistance();
@@ -59,7 +59,7 @@ public class ReceivedPacketHandler {
             } else {
                 // Lunge: 視線方向へ推進
                 Vec3 lookVec = player.getForward();
-                double strength = 0.8 + (level * 0.4);
+                double strength = 0.8 + (level * 0.4) + (currentCount * 0.1);
                 lungeVelocity = lookVec.scale(strength);
             }
 
