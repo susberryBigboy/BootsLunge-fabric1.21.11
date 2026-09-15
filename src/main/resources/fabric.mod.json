@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "id": "bootslunge",
+  "version": "${version}",
+  "name": "Boots Lunge",
+  "description": "",
+  "authors": [],
+  "contact": {},
+  "license": "All-Rights-Reserved",
+  "icon": "icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "com.papack.bootslunge.client.BootslungeClient"
+    ],
+    "main": [
+      "com.papack.bootslunge.Bootslunge"
+    ]
+  },
+  "mixins": [
+    "bootslunge.mixins.json",
+    {
+      "config": "bootslunge.client.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric-api": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}

@@ -1,0 +1,88 @@
+package com.papack.bootslunge.network;
+
+import com.papack.bootslunge.Bootslunge;
+import com.papack.bootslunge.Utils;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
+public class ReceivedPacketHandler {
+
+    private static final Map<UUID, Integer> LUNGE_COUNTS = new HashMap<>();
+
+    public static void onC2SPacketReceived(LungePacketPayload payload, ServerPlayNetworking.Context context) {
+
+        if (context.player() instanceof ServerPlayer player) {
+
+            ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
+            int level = Utils.getEnchantLevel(player, boots, Bootslunge.BOOTS_LUNGE);
+
+            if (level <= 0) return;
+
+            // 10tickの連射防止クールダウンチェック
+            if (player.getCooldowns().isOnCooldown(boots)) return;
+
+            UUID playerId = player.getUUID();
+            int currentCount = LUNGE_COUNTS.getOrDefault(playerId, 0);
+
+            // 【重要】残りの使用回数をチェック (レベル回数以上なら空中での発動を拒否)
+            if (currentCount >= level + 1) {
+                return;
+            }
+
+            Vec3 lungeVelocity;
+
+            if (payload.request()) {
+
+                // 空中ジャンプ: 上向き（Y軸）のみに固定強度のベクトルを生成
+                // 上向きの強さは調整可能です（例: 0.45〜0.6 程度がバニラジャンプと同等）
+                double jumpStrength = 0.8 + (level * 0.3);  // 少しだけ弱め
+                lungeVelocity = new Vec3(0, jumpStrength, 0);
+
+                player.resetFallDistance();
+
+            } else {
+                // Lunge: 視線方向へ推進
+                Vec3 lookVec = player.getForward();
+                double strength = 0.8 + (level * 0.4);
+                lungeVelocity = lookVec.scale(strength);
+            }
+
+            // 現在のベロシティを取得して加算
+            Vec3 currentVelocity = player.getDeltaMovement();
+            Vec3 newVelocity = currentVelocity.add(lungeVelocity);
+
+            // プレイヤーへ速度付与＆同期
+            player.setDeltaMovement(newVelocity);
+            player.hurtMarked = true;
+            player.connection.send(new ClientboundSetEntityMotionPacket(player));
+
+            // 使用回数を +1 して記録
+            LUNGE_COUNTS.put(playerId, currentCount + 1);
+
+            // クールダウンは常に10tick（連射防止用）
+            player.getCooldowns().addCooldown(boots, 10);
+
+            // サウンド再生
+            player.level().playSound(null,
+                    player.getX(), player.getY(), player.getZ(),
+                    SoundEvents.LUNGE_1,
+                    SoundSource.PLAYERS,
+                    1.0F,
+                    0.5F);
+        }
+    }
+
+    public static void resetCount(UUID playerId) {
+        LUNGE_COUNTS.remove(playerId);
+    }
+}
