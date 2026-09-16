@@ -30,8 +30,7 @@ public class ReceivedPacketHandler {
 
             // 10tickの連射防止クールダウンチェック
             if (player.getCooldowns().isOnCooldown(boots)) return;
-            // 水、マグマでは実行不可
-            if (player.isInLiquid() || player.isInPowderSnow) return;
+            // 水、マグマ、雪の判定
             // 滑空中はjumpモードは実行不可
             if (player.isFallFlying() && payload.request()) return;
 
@@ -43,18 +42,47 @@ public class ReceivedPacketHandler {
                 return;
             }
 
-            if (currentCount == 0) player.trackStartFallingPosition();
+            if (currentCount == 0) {
+                player.resetFallDistance();
+                player.trackStartFallingPosition();
+            }
 
             Vec3 lungeVelocity;
+            Vec3 directionPower;
 
             if (payload.request()) {
+
+                // 入力方向への推進力強度（必要に応じて調整してください）
+                double moveStrength = 0.6;
+
+                // プレイヤーの視線角度（Yaw）をラジアンに変換
+                double yawRad = Math.toRadians(player.getYRot());
+
+                // プレイヤーの視線方向に応じた前進（forward）および右（right）の水平単位ベクトルを計算
+                Vec3 forward = new Vec3(-Math.sin(yawRad), 0, Math.cos(yawRad)).normalize();
+                Vec3 right = new Vec3(-Math.cos(yawRad), 0, -Math.sin(yawRad)).normalize();
+
+                directionPower = switch (payload.direction()) {
+                    case 1 -> forward.scale(moveStrength);                                    // 前進
+                    case 2 -> right.scale(-moveStrength);                                   // 左
+                    case 3 -> forward.subtract(right).normalize().scale(moveStrength);       // 左前
+                    case 4 -> forward.scale(-moveStrength);                                  // 後方
+                    case 6 ->
+                            forward.add(right).scale(-moveStrength).normalize().scale(moveStrength); // 左後 (forward * -1 + right * -1)
+                    case 8 -> right.scale(moveStrength);                                     // 右
+                    case 9 -> forward.add(right).normalize().scale(moveStrength);            // 右前
+                    case 12 -> forward.scale(-1).add(right).normalize().scale(moveStrength); // 右後
+                    default -> Vec3.ZERO;
+                };
+
 
                 // 空中ジャンプ: 上向き（Y軸）のみに固定強度のベクトルを生成
                 // 上向きの強さは調整可能です（例: 0.45〜0.6 程度がバニラジャンプと同等）
                 double jumpStrength = 0.8 + (level * 0.4) + (currentCount * 0.1);
-                lungeVelocity = new Vec3(0, jumpStrength, 0);
+                lungeVelocity = new Vec3(0, jumpStrength, 0).add(directionPower);
 
                 player.resetFallDistance();
+                player.trackStartFallingPosition();
 
             } else {
                 // Lunge: 視線方向へ推進
@@ -63,9 +91,23 @@ public class ReceivedPacketHandler {
                 lungeVelocity = lookVec.scale(strength);
             }
 
-            // 現在のベロシティを取得して加算
+            // 水、マグマ、雪に入っている場合
+            boolean inLiquidOrSnow = (player.isInLiquid() || player.isInPowderSnow);
+
             Vec3 currentVelocity = player.getDeltaMovement();
-            Vec3 newVelocity = currentVelocity.add(lungeVelocity);
+            Vec3 newVelocity;
+
+            if (inLiquidOrSnow) {
+                // 水中では慣性が強すぎるため、既存の速度を加算せず、
+                // 弱めた Lunge 速度のみに置き換える（または既存速度を強く減衰させてから足す）
+                lungeVelocity = lungeVelocity.scale(0.3); // 半減(0.5)よりもう少し落とす
+                newVelocity = currentVelocity.scale(0.2).add(lungeVelocity);
+            } else {
+                newVelocity = currentVelocity.add(lungeVelocity);
+            }
+
+            // プレイヤーへ速度付与＆同期
+            player.setDeltaMovement(newVelocity);
 
             // プレイヤーへ速度付与＆同期
             player.setDeltaMovement(newVelocity);

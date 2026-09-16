@@ -38,11 +38,11 @@ public class BootslungeClient implements ClientModInitializer {
 
             // 1. LUNGE_KEY の処理
             while (LUNGE_KEY.consumeClick()) {
-                ClientPlayNetworking.send(new LungePacketPayload(false));
+                ClientPlayNetworking.send(new LungePacketPayload(false, 0));  // this `0` is dummy
             }
 
             // 2. 空中時間のカウント処理
-            if (player.onGround()) {
+            if (player.onGround() || player.isInLiquid() || player.isInPowderSnow) {
                 offGroundTicks = 0;
             } else {
                 offGroundTicks++;
@@ -55,7 +55,13 @@ public class BootslungeClient implements ClientModInitializer {
             // 地上ジャンプ直後の誤暴発を完全回避します
             if (isJumpPressed && !wasJumpPressed) {
                 if (!player.onGround() && offGroundTicks >= 3) {
-                    ClientPlayNetworking.send(new LungePacketPayload(true));
+                    int direction = 0;
+                    direction += client.options.keyUp.isDown() ? 1 : 0;
+                    direction += client.options.keyLeft.isDown() ? 2 : 0;
+                    direction += client.options.keyDown.isDown() ? 4 : 0;
+                    direction += client.options.keyRight.isDown() ? 8 : 0;
+
+                    ClientPlayNetworking.send(new LungePacketPayload(true, direction));
                 }
             }
 

@@ -16,7 +16,7 @@ public abstract class PlayerMixin {
     private void bootsLunge$onTick(CallbackInfo ci) {
         Player player = (Player) (Object) this;
 
-        if (!player.level().isClientSide() && player.onGround()) {
+        if (!player.level().isClientSide() && (player.onGround() || player.isInLiquid() || player.isInPowderSnow)) {
             ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
 
             // ブーツのクールダウンが明けていて、しっかり着地している時のみカウントをリセットする
