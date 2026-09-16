@@ -63,15 +63,15 @@ public class ReceivedPacketHandler {
                 Vec3 right = new Vec3(-Math.cos(yawRad), 0, -Math.sin(yawRad)).normalize();
 
                 directionPower = switch (payload.direction()) {
-                    case 1 -> forward.scale(moveStrength);                                    // 前進
-                    case 2 -> right.scale(-moveStrength);                                   // 左
-                    case 3 -> forward.subtract(right).normalize().scale(moveStrength);       // 左前
-                    case 4 -> forward.scale(-moveStrength);                                  // 後方
+                    case 1 -> forward.scale(moveStrength);  // 前進
+                    case 2 -> right.scale(-moveStrength);   // 左
+                    case 3 -> forward.subtract(right).normalize().scale(moveStrength);      // 左前
+                    case 4 -> forward.scale(-moveStrength); // 後方
                     case 6 ->
                             forward.add(right).scale(-moveStrength).normalize().scale(moveStrength); // 左後 (forward * -1 + right * -1)
-                    case 8 -> right.scale(moveStrength);                                     // 右
-                    case 9 -> forward.add(right).normalize().scale(moveStrength);            // 右前
-                    case 12 -> forward.scale(-1).add(right).normalize().scale(moveStrength); // 右後
+                    case 8 -> right.scale(moveStrength);    // 右
+                    case 9 -> forward.add(right).normalize().scale(moveStrength);   // 右前
+                    case 12 -> forward.scale(-1).add(right).normalize().scale(moveStrength);    // 右後
                     default -> Vec3.ZERO;
                 };
 
