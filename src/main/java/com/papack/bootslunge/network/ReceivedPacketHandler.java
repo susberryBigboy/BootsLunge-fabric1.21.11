@@ -52,33 +52,39 @@ public class ReceivedPacketHandler {
 
             if (payload.request()) {
 
-                // 入力方向への推進力強度（必要に応じて調整してください）
-                double moveStrength = 0.6;
+                // 1. 方向キー入力の有無で制御を変更
+                boolean hasDirectionInput = payload.direction() != 0;
 
-                // プレイヤーの視線角度（Yaw）をラジアンに変換
+                // 水平方向のダッシュ力（無入力時は0、入力時はサッと大きく移動）
+                double moveStrength = hasDirectionInput ? (1.0 + level * 0.2) : 0.0;
+
+                // 視線角度（Yaw）のラジアン計算
                 double yawRad = Math.toRadians(player.getYRot());
-
-                // プレイヤーの視線方向に応じた前進（forward）および右（right）の水平単位ベクトルを計算
                 Vec3 forward = new Vec3(-Math.sin(yawRad), 0, Math.cos(yawRad)).normalize();
                 Vec3 right = new Vec3(-Math.cos(yawRad), 0, -Math.sin(yawRad)).normalize();
 
                 directionPower = switch (payload.direction()) {
-                    case 1 -> forward.scale(moveStrength);  // 前進
-                    case 2 -> right.scale(-moveStrength);   // 左
-                    case 3 -> forward.subtract(right).normalize().scale(moveStrength);      // 左前
-                    case 4 -> forward.scale(-moveStrength); // 後方
-                    case 6 ->
-                            forward.add(right).scale(-moveStrength).normalize().scale(moveStrength); // 左後 (forward * -1 + right * -1)
-                    case 8 -> right.scale(moveStrength);    // 右
-                    case 9 -> forward.add(right).normalize().scale(moveStrength);   // 右前
-                    case 12 -> forward.scale(-1).add(right).normalize().scale(moveStrength);    // 右後
+                    case 1 -> forward.scale(moveStrength);                                    // 前進
+                    case 2 -> right.scale(-moveStrength);                                   // 左
+                    case 3 -> forward.subtract(right).normalize().scale(moveStrength);       // 左前
+                    case 4 -> forward.scale(-moveStrength);                                  // 後方
+                    case 6 -> forward.add(right).scale(-moveStrength).normalize().scale(moveStrength); // 左後
+                    case 8 -> right.scale(moveStrength);                                     // 右
+                    case 9 -> forward.add(right).normalize().scale(moveStrength);            // 右前
+                    case 12 -> forward.scale(-1).add(right).normalize().scale(moveStrength); // 右後
                     default -> Vec3.ZERO;
                 };
 
+                // 2. Y軸上昇（ジャンプ力）の計算
+                // 方向キー入力あり：わずかに浮き上がる程度（0.35〜0.4程度でふわっと低空維持）
+                // 方向キー入力なし：従来のしっかりした2段ジャンプ（0.8〜）
+                double jumpStrength;
+                if (hasDirectionInput) {
+                    jumpStrength = 0.35;
+                } else {
+                    jumpStrength = 0.8 + (level * 0.4) + (currentCount * 0.1);
+                }
 
-                // 空中ジャンプ: 上向き（Y軸）のみに固定強度のベクトルを生成
-                // 上向きの強さは調整可能です（例: 0.45〜0.6 程度がバニラジャンプと同等）
-                double jumpStrength = 0.8 + (level * 0.4) + (currentCount * 0.1);
                 lungeVelocity = new Vec3(0, jumpStrength, 0).add(directionPower);
 
                 player.resetFallDistance();
@@ -117,8 +123,8 @@ public class ReceivedPacketHandler {
             // 使用回数を +1 して記録
             LUNGE_COUNTS.put(playerId, currentCount + 1);
 
-            // クールダウンは常に10tick（連射防止用）
-            player.getCooldowns().addCooldown(boots, 10);
+            // クールダウンは常に5tick（連射防止用）
+            player.getCooldowns().addCooldown(boots, 5);
 
             // サウンド再生
             player.level().playSound(null,
