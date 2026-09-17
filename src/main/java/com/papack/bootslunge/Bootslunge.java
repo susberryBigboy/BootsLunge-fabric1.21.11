@@ -5,10 +5,12 @@ import com.papack.bootslunge.network.LungePacketPayload;
 import com.papack.bootslunge.network.ReceivedPacketHandler;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.enchantment.Enchantment;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -41,5 +43,12 @@ public class Bootslunge implements ModInitializer {
 
         // Packet Receiver
         ServerPlayNetworking.registerGlobalReceiver(LungePacketPayload.TYPE, ReceivedPacketHandler::lungeActionHandler);
+
+        // Player Join
+        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
+            if (handler.player instanceof ServerPlayer serverPlayer) {
+                ServerPlayNetworking.send(serverPlayer, new LungePacketPayload(config.enableCtrlQuickJump, 100));
+            }
+        });
     }
 }

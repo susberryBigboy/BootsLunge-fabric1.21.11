@@ -24,6 +24,9 @@ public class Config {
     @SerializedName("spawn_particle")
     public boolean spawnParticle = true;
 
+    @SerializedName("enable_ctrl_quick_jump")
+    public boolean enableCtrlQuickJump = true;
+
     // Directional Jump -------------------------------------
     @SerializedName("directional_jump_move_strength_base")
     public double directionJumpMoveStrengthBase = 1.0;
