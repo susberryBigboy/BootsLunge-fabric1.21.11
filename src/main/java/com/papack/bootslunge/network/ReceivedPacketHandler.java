@@ -3,6 +3,7 @@ package com.papack.bootslunge.network;
 import com.papack.bootslunge.Bootslunge;
 import com.papack.bootslunge.Utils;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -122,16 +123,29 @@ public class ReceivedPacketHandler {
             // 使用回数を +1 して記録
             LUNGE_COUNTS.put(playerId, currentCount + 1);
 
-            // クールダウンは常に5tick（連射防止用）
+            // Cooldown (Prevent consecutive execution)
             player.getCooldowns().addCooldown(boots, 5);
 
-            // サウンド再生
-            player.level().playSound(null,
-                    player.getX(), player.getY(), player.getZ(),
-                    SoundEvents.LUNGE_1,
-                    SoundSource.PLAYERS,
-                    1.0F,
-                    0.5F);
+            // Sounds
+            if (config.playSound) {
+                player.level().playSound(null,
+                        player.getX(), player.getY(), player.getZ(),
+                        SoundEvents.LUNGE_1,
+                        SoundSource.PLAYERS,
+                        1.0F,
+                        0.5F);
+            }
+
+            // Particles
+            if (config.spawnParticle) {
+                player.level().sendParticles(
+                        ParticleTypes.CLOUD,
+                        player.getX(), player.getY(), player.getZ(),
+                        3,
+                        0.1, 0.1, 0.1,
+                        0.05
+                        );
+            }
         }
     }
 

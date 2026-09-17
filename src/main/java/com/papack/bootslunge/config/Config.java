@@ -18,6 +18,12 @@ public class Config {
     private static final Path CONFIG_DIR = FabricLoader.getInstance().getConfigDir().resolve("BootsLunge");
     private static final File FILE = CONFIG_DIR.resolve("config.json").toFile();
 
+    @SerializedName("play_sound")
+    public boolean playSound = true;
+
+    @SerializedName("spawn_particle")
+    public boolean spawnParticle = true;
+
     // Directional Jump -------------------------------------
     @SerializedName("directional_jump_move_strength_base")
     public double directionJumpMoveStrengthBase = 1.0;
