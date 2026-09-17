@@ -2,9 +2,11 @@
   "schemaVersion": 1,
   "id": "bootslunge",
   "version": "${version}",
-  "name": "Boots Lunge",
+  "name": "Boots Lunge - fabric1.21.11",
   "description": "",
-  "authors": [],
+  "authors": [
+    "Papack Craft"
+  ],
   "contact": {},
   "license": "All-Rights-Reserved",
   "icon": "icon.png",
