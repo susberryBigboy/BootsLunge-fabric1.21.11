@@ -15,11 +15,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.papack.bootslunge.Bootslunge.config;
+
 public class ReceivedPacketHandler {
 
     private static final Map<UUID, Integer> LUNGE_COUNTS = new HashMap<>();
 
-    public static void onC2SPacketReceived(LungePacketPayload payload, ServerPlayNetworking.Context context) {
+    public static void lungeActionHandler(LungePacketPayload payload, ServerPlayNetworking.Context context) {
 
         if (context.player() instanceof ServerPlayer player) {
 
@@ -56,7 +58,7 @@ public class ReceivedPacketHandler {
                 boolean hasDirectionInput = payload.direction() != 0;
 
                 // 水平方向のダッシュ力（無入力時は0、入力時はサッと大きく移動）
-                double moveStrength = hasDirectionInput ? (1.0 + level * 0.2) : 0.0;
+                double moveStrength = hasDirectionInput ? (config.directionJump_moveStrength_base + level * config.directionJump_moveStrength_levelMultiplier) : 0.0;
 
                 // 視線角度（Yaw）のラジアン計算
                 double yawRad = Math.toRadians(player.getYRot());
@@ -80,9 +82,9 @@ public class ReceivedPacketHandler {
                 // 方向キー入力なし：従来のしっかりした2段ジャンプ（0.8〜）
                 double jumpStrength;
                 if (hasDirectionInput) {
-                    jumpStrength = 0.35;
+                    jumpStrength = config.directionJump_moveStrength_jumpStrength;
                 } else {
-                    jumpStrength = 0.8 + (level * 0.4) + (currentCount * 0.1);
+                    jumpStrength = config.no_directionJump_jumpStrength_base + (level * config.no_directionJump_jumpStrength_levelMultiplier) + (currentCount * config.no_directionJump_jumpStrength_countMultiplier);
                 }
 
                 lungeVelocity = new Vec3(0, jumpStrength, 0).add(directionPower);
@@ -93,7 +95,7 @@ public class ReceivedPacketHandler {
             } else {
                 // Lunge: 視線方向へ推進
                 Vec3 lookVec = player.getForward();
-                double strength = 0.8 + (level * 0.4) + (currentCount * 0.1);
+                double strength = config.lungeJump_strength_base + (level * config.lungeJump_strength_levelMultiplier) + (currentCount * config.lungeJump_strength_countMultiplier);
                 lungeVelocity = lookVec.scale(strength);
             }
 
@@ -106,8 +108,8 @@ public class ReceivedPacketHandler {
             if (inLiquidOrSnow) {
                 // 水中では慣性が強すぎるため、既存の速度を加算せず、
                 // 弱めた Lunge 速度のみに置き換える（または既存速度を強く減衰させてから足す）
-                lungeVelocity = lungeVelocity.scale(0.3); // 半減(0.5)よりもう少し落とす
-                newVelocity = currentVelocity.scale(0.2).add(lungeVelocity);
+                lungeVelocity = lungeVelocity.scale(config.inLiquid_lungeVelocity_dampingMultiplier); // 半減(0.5)よりもう少し落とす
+                newVelocity = currentVelocity.scale(config.inLiquid_currentVelocity_dampingMultiplier).add(lungeVelocity);
             } else {
                 newVelocity = currentVelocity.add(lungeVelocity);
             }

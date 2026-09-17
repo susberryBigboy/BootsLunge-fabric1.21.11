@@ -16,6 +16,7 @@ public class BootslungeClient implements ClientModInitializer {
 
     public static final KeyMapping.Category KEY_CATEGORY_BOOT_LUNGE = KeyMapping.Category.register(Identifier.fromNamespaceAndPath(Bootslunge.MOD_ID, "main"));
     public static final String KEY_DESC_BOOT_LUNGE = "key.desc.bootlunge.lunge_key";
+    private static final int NO_DIRECTION = 0;
 
     public static KeyMapping LUNGE_KEY;
 
@@ -28,7 +29,7 @@ public class BootslungeClient implements ClientModInitializer {
         LUNGE_KEY = KeyBindingHelper.registerKeyBinding(new KeyMapping(
                 KEY_DESC_BOOT_LUNGE,
                 InputConstants.Type.KEYSYM,
-                GLFW.GLFW_KEY_Q,
+                GLFW.GLFW_KEY_R,
                 KEY_CATEGORY_BOOT_LUNGE
         ));
 
@@ -38,7 +39,7 @@ public class BootslungeClient implements ClientModInitializer {
 
             // 1. LUNGE_KEY の処理
             while (LUNGE_KEY.consumeClick()) {
-                ClientPlayNetworking.send(new LungePacketPayload(false, 0));  // this `0` is dummy
+                ClientPlayNetworking.send(new LungePacketPayload(false, NO_DIRECTION));
             }
 
             // 2. 空中時間のカウント処理
@@ -55,7 +56,7 @@ public class BootslungeClient implements ClientModInitializer {
             // 地上ジャンプ直後の誤暴発を完全回避します
             if (isJumpPressed && !wasJumpPressed) {
                 if (!player.onGround() && offGroundTicks >= 3) {
-                    int direction = 0;
+                    int direction = NO_DIRECTION;
                     direction += client.options.keyUp.isDown() ? 1 : 0;
                     direction += client.options.keyLeft.isDown() ? 2 : 0;
                     direction += client.options.keyDown.isDown() ? 4 : 0;
