@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 public record LungePacketPayload(
         boolean request,
+        boolean shiftDown,
         boolean sound,
         boolean particle,
         int direction,
@@ -20,6 +21,7 @@ public record LungePacketPayload(
     public static final StreamCodec<FriendlyByteBuf, LungePacketPayload> CODEC =
             StreamCodec.composite(
                     ByteBufCodecs.BOOL, LungePacketPayload::request,
+                    ByteBufCodecs.BOOL, LungePacketPayload::shiftDown,
                     ByteBufCodecs.BOOL, LungePacketPayload::sound,
                     ByteBufCodecs.BOOL, LungePacketPayload::particle,
                     ByteBufCodecs.INT, LungePacketPayload::direction,

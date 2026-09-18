@@ -79,6 +79,7 @@ public class BootslungeClient implements ClientModInitializer {
             while (LUNGE_KEY.consumeClick()) {
                 ClientPlayNetworking.send(new LungePacketPayload(
                         false,
+                        player.isShiftKeyDown(),
                         configClient.playSound,
                         configClient.spawnParticle,
                         NO_DIRECTION,
@@ -107,6 +108,7 @@ public class BootslungeClient implements ClientModInitializer {
                     direction += client.options.keyRight.isDown() ? 8 : 0;
 
                     ClientPlayNetworking.send(new LungePacketPayload(true,
+                            player.isShiftKeyDown(),
                             configClient.playSound,
                             configClient.spawnParticle,
                             direction,

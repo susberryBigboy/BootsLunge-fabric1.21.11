@@ -109,6 +109,11 @@ public class ReceivedPacketHandler {
                 newVelocity = currentVelocity.add(lungeVelocity);
             }
 
+            // Shift Key - Powerful braking
+            if (payload.shiftDown()) {
+                newVelocity = new Vec3(newVelocity.x, 0, newVelocity.z);
+            }
+
             // プレイヤーへ速度付与＆同期
             player.setDeltaMovement(newVelocity);
             player.hurtMarked = true;
