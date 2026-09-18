@@ -12,20 +12,11 @@ import java.io.FileWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-public class Config {
+public class ConfigServer {
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final Path CONFIG_DIR = FabricLoader.getInstance().getConfigDir().resolve("BootsLunge");
-    private static final File FILE = CONFIG_DIR.resolve("config.json").toFile();
-
-    @SerializedName("play_sound")
-    public boolean playSound = true;
-
-    @SerializedName("spawn_particle")
-    public boolean spawnParticle = true;
-
-    @SerializedName("enable_ctrl_quick_jump")
-    public boolean enableCtrlQuickJump = true;
+    private static final File FILE = CONFIG_DIR.resolve("config_server.json").toFile();
 
     // Directional Jump -------------------------------------
     @SerializedName("directional_jump_move_strength_base")
@@ -65,18 +56,18 @@ public class Config {
     public double inLiquidCurrentVelocityDampingMultiplier = 0.2;
 
 
-    public static Config load() {
+    public static ConfigServer load() {
         if (FILE.exists()) {
             try (FileReader reader = new FileReader(FILE)) {
-                Config config = GSON.fromJson(reader, Config.class);
-                if (config != null) return config;
+                ConfigServer configServer = GSON.fromJson(reader, ConfigServer.class);
+                if (configServer != null) return configServer;
             } catch (Exception e) {
                 Bootslunge.LOGGER.error("Failed to load config", e);
             }
         }
-        Config defaultConfig = new Config();
-        defaultConfig.save();
-        return defaultConfig;
+        ConfigServer defaultConfigServer = new ConfigServer();
+        defaultConfigServer.save();
+        return defaultConfigServer;
     }
 
     public void save() {
@@ -91,6 +82,4 @@ public class Config {
             Bootslunge.LOGGER.error("Failed to save config", e);
         }
     }
-
-
 }

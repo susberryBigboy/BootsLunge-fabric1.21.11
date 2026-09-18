@@ -17,6 +17,9 @@
     ],
     "main": [
       "com.papack.bootslunge.Bootslunge"
+    ],
+    "modmenu": [
+      "com.papack.bootslunge.client.ModMenuIntegration"
     ]
   },
   "mixins": [
@@ -30,5 +33,9 @@
     "fabricloader": ">=${loader_version}",
     "fabric-api": "*",
     "minecraft": "${minecraft_version}"
+  },
+  "suggests": {
+    "modmenu": "*",
+    "cloth-config2": "*"
   }
 }

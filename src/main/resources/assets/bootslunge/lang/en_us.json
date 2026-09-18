@@ -1,5 +1,10 @@
 {
+  "config.bl.option.ctrl_jump": "Enable Ctrl Key Quick Jump",
+  "config.bl.option.directional_jump_angle":"Directional Jump Angle",
+  "config.bl.option.play_sound": "Play Sound",
+  "config.bl.option.spawn_particle": "Spawn Particle",
+  "enchantment.bootslunge.boots_lunge": "Boots Lunge",
   "key.category.bootslunge.main": "Boots Lunge",
-  "key.desc.bootlunge.lunge_key": "Boots Lunge Key",
-  "enchantment.bootslunge.boots_lunge": "Boots Lunge"
+  "key.desc.bootlunge.config_screen": "Config Screen",
+  "key.desc.bootlunge.lunge_key": "Boots Lunge Key"
 }

@@ -1,13 +1,13 @@
 package com.papack.bootslunge;
 
 import com.mojang.brigadier.context.CommandContext;
-import com.papack.bootslunge.config.Config;
+import com.papack.bootslunge.config.ConfigServer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.permissions.Permissions;
 
-import static com.papack.bootslunge.Bootslunge.config;
+import static com.papack.bootslunge.Bootslunge.configServer;
 
 public class Commands {
 
@@ -29,7 +29,7 @@ public class Commands {
 
     private static int resetToDefault(CommandContext<CommandSourceStack> ctx) {
         // Create new instance
-        config = new Config();
+        configServer = new ConfigServer();
         save();
 
         ctx.getSource().sendSuccess(() -> Component.literal("Settings reset to defaults"), true);
@@ -39,14 +39,14 @@ public class Commands {
     private static int reloadConfig(CommandContext<CommandSourceStack> ctx) {
 
         // Reload
-        config = Config.load();
+        configServer = ConfigServer.load();
 
         ctx.getSource().sendSuccess(() -> Component.literal("Configuration reloaded successfully."), true);
         return 1;
     }
 
     private static void save() {
-        config.save();
-        config = Config.load();
+        configServer.save();
+        configServer = ConfigServer.load();
     }
 }
