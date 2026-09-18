@@ -40,6 +40,6 @@ public class Bootslunge implements ModInitializer {
         PayloadTypeRegistry.playC2S().register(LungePacketPayload.TYPE, LungePacketPayload.CODEC);
 
         // Packet Receiver
-        ServerPlayNetworking.registerGlobalReceiver(LungePacketPayload.TYPE, ReceivedPacketHandler::lungeActionHandler);
+        ServerPlayNetworking.registerGlobalReceiver(LungePacketPayload.TYPE, ReceivedPacketHandler::lungeJumpAction);
     }
 }

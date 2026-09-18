@@ -22,7 +22,7 @@ public class ReceivedPacketHandler {
 
     private static final Map<UUID, Integer> LUNGE_COUNTS = new HashMap<>();
 
-    public static void lungeActionHandler(LungePacketPayload payload, ServerPlayNetworking.Context context) {
+    public static void lungeJumpAction(LungePacketPayload payload, ServerPlayNetworking.Context context) {
 
         if (context.player() instanceof ServerPlayer player) {
 

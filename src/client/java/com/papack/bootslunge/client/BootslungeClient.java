@@ -4,7 +4,6 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.papack.bootslunge.Bootslunge;
 import com.papack.bootslunge.client.config.ConfigClient;
 import com.papack.bootslunge.client.config.ConfigScreen;
-import com.papack.bootslunge.client.network.ReceivedPacketHandlerClient;
 import com.papack.bootslunge.network.LungePacketPayload;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -34,8 +33,6 @@ public class BootslungeClient implements ClientModInitializer {
     private static boolean wasJumpPressed = false;
     private static int offGroundTicks = 0; // 空中にいる時間をカウント
 
-    public static boolean enableCtrlJump = false;
-
     @Override
     public void onInitializeClient() {
 
@@ -57,9 +54,6 @@ public class BootslungeClient implements ClientModInitializer {
                 GLFW.GLFW_KEY_O,
                 KEY_CATEGORY_BOOT_LUNGE
         ));
-
-        // Packet Receiver
-        ClientPlayNetworking.registerGlobalReceiver(LungePacketPayload.TYPE, ReceivedPacketHandlerClient::setEnableCtrlQuickJump);
 
         // Tick
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
