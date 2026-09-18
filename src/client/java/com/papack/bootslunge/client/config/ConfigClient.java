@@ -28,7 +28,7 @@ public class ConfigClient {
     public boolean enableCtrlQuickJump = true;
 
     @SerializedName("directional_jump_angle")
-    public int directionalJumpAngle = 0;
+    public int directionalJumpAngle = 60;
 
 
     public static ConfigClient load() {

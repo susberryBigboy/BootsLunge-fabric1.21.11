@@ -93,7 +93,7 @@ public class ReceivedPacketHandler {
                 }
 
                 player.resetFallDistance();
-                player.trackStartFallingPosition();
+                //player.trackStartFallingPosition();
 
             } else {
                 // 【視線方向 Lunge (Rキー)】
@@ -106,17 +106,14 @@ public class ReceivedPacketHandler {
             // =========================================================
             boolean inLiquidOrSnow = (player.isInLiquid() || player.isInPowderSnow);
 
-            Vec3 currentVelocity = player.getDeltaMovement();
+            Vec3 velocity = player.getDeltaMovement();
+            Vec3 currentVelocity = new Vec3(velocity.x, Math.min(0, velocity.y), velocity.z);
             Vec3 newVelocity;
 
             if (inLiquidOrSnow) {
                 lungeVelocity = lungeVelocity.scale(configServer.inLiquidLungeVelocityDampingMultiplier);
                 newVelocity = currentVelocity.scale(configServer.inLiquidCurrentVelocityDampingMultiplier).add(lungeVelocity);
             } else {
-                // 地上Ctrlジャンプ(quickJump)の場合、すでに乗っているバニラジャンプのY速度(約0.42)をキャンセル
-                if (payload.quickJump()) {
-                    currentVelocity = new Vec3(currentVelocity.x, 0.0, currentVelocity.z);
-                }
                 newVelocity = currentVelocity.add(lungeVelocity);
             }
 
