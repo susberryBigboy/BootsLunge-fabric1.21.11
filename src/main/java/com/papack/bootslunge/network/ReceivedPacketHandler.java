@@ -114,10 +114,10 @@ public class ReceivedPacketHandler {
             player.hurtMarked = true;
             player.connection.send(new ClientboundSetEntityMotionPacket(player));
 
-            // fallDistanceをリセット
-            player.resetFallDistance();
+            // 落下ダメージがウィンドチャージ使用時と同じような挙動になるようにセット
+            player.setIgnoreFallDamageFromCurrentImpulse(true);
             player.currentImpulseImpactPos = player.position();
-            player.trackStartFallingPosition();
+            player.resetFallDistance();
 
             // 使用回数を +1 して記録
             LUNGE_COUNTS.put(playerId, currentCount + 1);
