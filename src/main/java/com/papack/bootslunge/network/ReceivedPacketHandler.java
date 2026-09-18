@@ -50,9 +50,8 @@ public class ReceivedPacketHandler {
             }
 
             // =========================================================
-            // 推進力の統一計算
+            // 1. 純粋な推進力の計算（補正なしの統一値）
             // =========================================================
-            // 全モード共通の基本パワーを計算 (レベルと使用回数で拡張)
             double baseStrength = configServer.lungeBaseStrength
                     + (level * configServer.lungeLevelMultiplier)
                     + (currentCount * configServer.lungeCountMultiplier);
@@ -60,42 +59,36 @@ public class ReceivedPacketHandler {
             Vec3 lungeVelocity;
 
             if (payload.request()) {
-                // WASD + Space (または Ctrl+Space) / Spaceのみ
                 boolean hasDirectionInput = payload.direction() != 0;
 
                 if (!hasDirectionInput) {
-                    // 【No Direction Jump】真上(Y軸)へ全パワーを加算
+                    // 【No Direction Jump】真上へ発動
                     lungeVelocity = new Vec3(0, baseStrength, 0);
                 } else {
-                    // 【Directional Jump】角度(angle: 0〜90)とWASD入力方向へパワーを分解
+                    // 【Directional Jump】角度と方向に沿って分解
                     double pitchRad = Math.toRadians(Math.clamp(payload.angle(), 0.0, 90.0));
-                    double horizontalScale = Math.cos(pitchRad); // 水平方向倍率
-                    double verticalScale = Math.sin(pitchRad);   // Y軸(垂直)方向倍率
+                    double horizontalScale = Math.cos(pitchRad);
+                    double verticalScale = Math.sin(pitchRad);
 
-                    // プレイヤーの視線（Yaw）に基づく「前(forward)」と「右(right)」の単位ベクトル
                     double yawRad = Math.toRadians(player.getYRot());
                     Vec3 forward = new Vec3(-Math.sin(yawRad), 0, Math.cos(yawRad)).normalize();
                     Vec3 right = new Vec3(-Math.cos(yawRad), 0, -Math.sin(yawRad)).normalize();
 
-                    // 方向キーに応じて「生の方向」を合成し、最後に必ず1回だけ normalize() する
                     Vec3 rawDir = switch (payload.direction()) {
-                        case 1 -> forward;                             // 前
-                        case 2 -> right.reverse();                     // 左
-                        case 3 -> forward.subtract(right);             // 左前
-                        case 4 -> forward.reverse();                   // 後
-                        case 6 -> forward.reverse().subtract(right);   // 左後
-                        case 8 -> right;                               // 右
-                        case 9 -> forward.add(right);                  // 右前
-                        case 12 -> forward.reverse().add(right);        // 右後
+                        case 1 -> forward;
+                        case 2 -> right.reverse();
+                        case 3 -> forward.subtract(right);
+                        case 4 -> forward.reverse();
+                        case 6 -> forward.reverse().subtract(right);
+                        case 8 -> right;
+                        case 9 -> forward.add(right);
+                        case 12 -> forward.reverse().add(right);
                         default -> Vec3.ZERO;
                     };
 
-                    // 確実に長さを 1.0 に正規化
                     Vec3 horizDir = rawDir.lengthSqr() > 0 ? rawDir.normalize() : Vec3.ZERO;
-
-                    // 水平方向(horizDir * horizontalScale) と 垂直方向(Y * verticalScale) を合成
-                    // (horizontalScale^2 + verticalScale^2 = 1.0 になるため、combinedDir の長さも正確に 1.0 になります)
                     Vec3 combinedDir = horizDir.scale(horizontalScale).add(0, verticalScale, 0);
+
                     lungeVelocity = combinedDir.scale(baseStrength);
                 }
 
@@ -103,13 +96,13 @@ public class ReceivedPacketHandler {
                 player.trackStartFallingPosition();
 
             } else {
-                // 【視線方向 Lunge (Rキー)】視線単位ベクトル (LookVector) に全パワーを加算
-                Vec3 lookVec = player.getForward().normalize();
+                // 【視線方向 Lunge (Rキー)】
+                Vec3 lookVec = player.getForward().normalize(); // バニラジャンプ分の値を加算
                 lungeVelocity = lookVec.scale(baseStrength);
             }
 
             // =========================================================
-            // 水、マグマ、雪の減衰処理（既存仕様の維持）
+            // 2. 速度の合成とバニラジャンプ重複の除去
             // =========================================================
             boolean inLiquidOrSnow = (player.isInLiquid() || player.isInPowderSnow);
 
@@ -120,6 +113,10 @@ public class ReceivedPacketHandler {
                 lungeVelocity = lungeVelocity.scale(configServer.inLiquidLungeVelocityDampingMultiplier);
                 newVelocity = currentVelocity.scale(configServer.inLiquidCurrentVelocityDampingMultiplier).add(lungeVelocity);
             } else {
+                // 地上Ctrlジャンプ(quickJump)の場合、すでに乗っているバニラジャンプのY速度(約0.42)をキャンセル
+                if (payload.quickJump()) {
+                    currentVelocity = new Vec3(currentVelocity.x, 0.0, currentVelocity.z);
+                }
                 newVelocity = currentVelocity.add(lungeVelocity);
             }
 

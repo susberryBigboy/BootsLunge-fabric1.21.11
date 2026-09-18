@@ -10,6 +10,7 @@ public record LungePacketPayload(
         boolean request,
         boolean sound,
         boolean particle,
+        boolean quickJump,
         int direction,
         int angle) implements CustomPacketPayload {
 
@@ -22,6 +23,7 @@ public record LungePacketPayload(
                     ByteBufCodecs.BOOL, LungePacketPayload::request,
                     ByteBufCodecs.BOOL, LungePacketPayload::sound,
                     ByteBufCodecs.BOOL, LungePacketPayload::particle,
+                    ByteBufCodecs.BOOL, LungePacketPayload::quickJump,
                     ByteBufCodecs.INT, LungePacketPayload::direction,
                     ByteBufCodecs.INT, LungePacketPayload::angle,
                     LungePacketPayload::new
