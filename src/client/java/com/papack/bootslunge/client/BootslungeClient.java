@@ -81,7 +81,6 @@ public class BootslungeClient implements ClientModInitializer {
                         false,
                         configClient.playSound,
                         configClient.spawnParticle,
-                        false,
                         NO_DIRECTION,
                         0));
             }
@@ -110,7 +109,6 @@ public class BootslungeClient implements ClientModInitializer {
                     ClientPlayNetworking.send(new LungePacketPayload(true,
                             configClient.playSound,
                             configClient.spawnParticle,
-                            player.onGround(),  // onGroundならquickJump判定
                             direction,
                             configClient.directionalJumpAngle));
                 }

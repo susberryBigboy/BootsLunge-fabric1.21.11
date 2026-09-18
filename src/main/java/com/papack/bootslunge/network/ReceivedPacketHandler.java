@@ -44,11 +44,6 @@ public class ReceivedPacketHandler {
                 return;
             }
 
-            if (currentCount == 0) {
-                player.resetFallDistance();
-                player.trackStartFallingPosition();
-            }
-
             // =========================================================
             // 1. 純粋な推進力の計算（補正なしの統一値）
             // =========================================================
@@ -92,9 +87,6 @@ public class ReceivedPacketHandler {
                     lungeVelocity = combinedDir.scale(baseStrength);
                 }
 
-                player.resetFallDistance();
-                //player.trackStartFallingPosition();
-
             } else {
                 // 【視線方向 Lunge (Rキー)】
                 Vec3 lookVec = player.getForward().normalize(); // バニラジャンプ分の値を加算
@@ -121,6 +113,11 @@ public class ReceivedPacketHandler {
             player.setDeltaMovement(newVelocity);
             player.hurtMarked = true;
             player.connection.send(new ClientboundSetEntityMotionPacket(player));
+
+            // fallDistanceをリセット
+            player.resetFallDistance();
+            player.currentImpulseImpactPos = player.position();
+            player.trackStartFallingPosition();
 
             // 使用回数を +1 して記録
             LUNGE_COUNTS.put(playerId, currentCount + 1);
