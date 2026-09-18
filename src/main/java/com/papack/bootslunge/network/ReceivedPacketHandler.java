@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.papack.bootslunge.Bootslunge.config;
+import static com.papack.bootslunge.Bootslunge.configServer;
 
 public class ReceivedPacketHandler {
 
@@ -59,7 +59,7 @@ public class ReceivedPacketHandler {
                 boolean hasDirectionInput = payload.direction() != 0;
 
                 // 水平方向のダッシュ力（無入力時は0、入力時はサッと大きく移動）
-                double moveStrength = hasDirectionInput ? (config.directionJumpMoveStrengthBase + level * config.directionJumpMoveStrengthLevelMultiplier) : 0.0;
+                double moveStrength = hasDirectionInput ? (configServer.directionJumpMoveStrengthBase + level * configServer.directionJumpMoveStrengthLevelMultiplier) : 0.0;
 
                 // 視線角度（Yaw）のラジアン計算
                 double yawRad = Math.toRadians(player.getYRot());
@@ -83,9 +83,9 @@ public class ReceivedPacketHandler {
                 // 方向キー入力なし：従来のしっかりした2段ジャンプ（0.8〜）
                 double jumpStrength;
                 if (hasDirectionInput) {
-                    jumpStrength = config.directionJumpMoveStrengthJumpStrength;
+                    jumpStrength = configServer.directionJumpMoveStrengthJumpStrength;
                 } else {
-                    jumpStrength = config.noDirectionJumpJumpStrengthBase + (level * config.noDirectionJumpJumpStrengthLevelMultiplier) + (currentCount * config.noDirectionJumpJumpStrengthCountMultiplier);
+                    jumpStrength = configServer.noDirectionJumpJumpStrengthBase + (level * configServer.noDirectionJumpJumpStrengthLevelMultiplier) + (currentCount * configServer.noDirectionJumpJumpStrengthCountMultiplier);
                 }
 
                 lungeVelocity = new Vec3(0, jumpStrength, 0).add(directionPower);
@@ -96,7 +96,7 @@ public class ReceivedPacketHandler {
             } else {
                 // Lunge: 視線方向へ推進
                 Vec3 lookVec = player.getForward();
-                double strength = config.lungeJumpStrengthBase + (level * config.lungeJumpStrengthLevelMultiplier) + (currentCount * config.lungeJumpStrengthCountMultiplier);
+                double strength = configServer.lungeJumpStrengthBase + (level * configServer.lungeJumpStrengthLevelMultiplier) + (currentCount * configServer.lungeJumpStrengthCountMultiplier);
                 lungeVelocity = lookVec.scale(strength);
             }
 
@@ -109,8 +109,8 @@ public class ReceivedPacketHandler {
             if (inLiquidOrSnow) {
                 // 水中では慣性が強すぎるため、既存の速度を加算せず、
                 // 弱めた Lunge 速度のみに置き換える（または既存速度を強く減衰させてから足す）
-                lungeVelocity = lungeVelocity.scale(config.inLiquidLungeVelocityDampingMultiplier); // 半減(0.5)よりもう少し落とす
-                newVelocity = currentVelocity.scale(config.inLiquidCurrentVelocityDampingMultiplier).add(lungeVelocity);
+                lungeVelocity = lungeVelocity.scale(configServer.inLiquidLungeVelocityDampingMultiplier); // 半減(0.5)よりもう少し落とす
+                newVelocity = currentVelocity.scale(configServer.inLiquidCurrentVelocityDampingMultiplier).add(lungeVelocity);
             } else {
                 newVelocity = currentVelocity.add(lungeVelocity);
             }
@@ -127,7 +127,7 @@ public class ReceivedPacketHandler {
             player.getCooldowns().addCooldown(boots, 5);
 
             // Sounds
-            if (config.playSound) {
+            if (payload.sound()) {
                 player.level().playSound(null,
                         player.getX(), player.getY(), player.getZ(),
                         SoundEvents.LUNGE_1,
@@ -137,14 +137,14 @@ public class ReceivedPacketHandler {
             }
 
             // Particles
-            if (config.spawnParticle) {
+            if (payload.sound()) {
                 player.level().sendParticles(
                         ParticleTypes.CLOUD,
                         player.getX(), player.getY(), player.getZ(),
                         3,
                         0.1, 0.1, 0.1,
                         0.05
-                        );
+                );
             }
         }
     }
