@@ -51,44 +51,53 @@ public class ReceivedPacketHandler {
             }
 
             Vec3 lungeVelocity;
-            Vec3 directionPower;
 
             if (payload.request()) {
 
-                // 1. 方向キー入力の有無で制御を変更
                 boolean hasDirectionInput = payload.direction() != 0;
 
-                // 水平方向のダッシュ力（無入力時は0、入力時はサッと大きく移動）
-                double moveStrength = hasDirectionInput ? (configServer.directionJumpMoveStrengthBase + level * configServer.directionJumpMoveStrengthLevelMultiplier) : 0.0;
+                // 1. 従来の基準値をそれぞれ計算
+                double baseMoveStrength = hasDirectionInput
+                        ? (configServer.directionJumpMoveStrengthBase + level * configServer.directionJumpMoveStrengthLevelMultiplier)
+                        : 0.0;
 
-                // 視線角度（Yaw）のラジアン計算
-                double yawRad = Math.toRadians(player.getYRot());
-                Vec3 forward = new Vec3(-Math.sin(yawRad), 0, Math.cos(yawRad)).normalize();
-                Vec3 right = new Vec3(-Math.cos(yawRad), 0, -Math.sin(yawRad)).normalize();
+                double baseJumpStrength = hasDirectionInput
+                        ? configServer.directionJumpMoveStrengthJumpStrength
+                        : (configServer.noDirectionJumpJumpStrengthBase + (level * configServer.noDirectionJumpJumpStrengthLevelMultiplier) + (currentCount * configServer.noDirectionJumpJumpStrengthCountMultiplier));
 
-                directionPower = switch (payload.direction()) {
-                    case 1 -> forward.scale(moveStrength);                                    // 前進
-                    case 2 -> right.scale(-moveStrength);                                   // 左
-                    case 3 -> forward.subtract(right).normalize().scale(moveStrength);       // 左前
-                    case 4 -> forward.scale(-moveStrength);                                  // 後方
-                    case 6 -> forward.add(right).scale(-moveStrength).normalize().scale(moveStrength); // 左後
-                    case 8 -> right.scale(moveStrength);                                     // 右
-                    case 9 -> forward.add(right).normalize().scale(moveStrength);            // 右前
-                    case 12 -> forward.scale(-1).add(right).normalize().scale(moveStrength); // 右後
-                    default -> Vec3.ZERO;
-                };
+                // 2. angle (0°〜90°) に応じた重み付け（ラジアン変換）
+                // 0° のとき: 水平 100% / Y軸 0%
+                // 90° のとき: 水平 0% / Y軸 100%
+                double pitchRad = Math.toRadians(Math.clamp(payload.angle(), 0.0, 90.0));
 
-                // 2. Y軸上昇（ジャンプ力）の計算
-                // 方向キー入力あり：わずかに浮き上がる程度（0.35〜0.4程度でふわっと低空維持）
-                // 方向キー入力なし：従来のしっかりした2段ジャンプ（0.8〜）
-                double jumpStrength;
-                if (hasDirectionInput) {
-                    jumpStrength = configServer.directionJumpMoveStrengthJumpStrength;
+                double horizontalScale = Math.cos(pitchRad); // 0°で1.0、90°で0.0
+                double verticalScale = Math.sin(pitchRad);   // 0°で0.0、90°で1.0
+
+                // 3. 従来と同じパワー感を維持したまま角度を適用
+                double finalMoveStrength = baseMoveStrength * horizontalScale;
+                double finalJumpStrength = baseJumpStrength * (hasDirectionInput ? verticalScale : 1.0);
+
+                if (!hasDirectionInput) {
+                    lungeVelocity = new Vec3(0, finalJumpStrength, 0);
                 } else {
-                    jumpStrength = configServer.noDirectionJumpJumpStrengthBase + (level * configServer.noDirectionJumpJumpStrengthLevelMultiplier) + (currentCount * configServer.noDirectionJumpJumpStrengthCountMultiplier);
-                }
+                    double yawRad = Math.toRadians(player.getYRot());
+                    Vec3 forward = new Vec3(-Math.sin(yawRad), 0, Math.cos(yawRad)).normalize();
+                    Vec3 right = new Vec3(-Math.cos(yawRad), 0, -Math.sin(yawRad)).normalize();
 
-                lungeVelocity = new Vec3(0, jumpStrength, 0).add(directionPower);
+                    Vec3 horizDir = switch (payload.direction()) {
+                        case 1 -> forward;
+                        case 2 -> right.scale(-1);
+                        case 3 -> forward.subtract(right).normalize();
+                        case 4 -> forward.scale(-1);
+                        case 6 -> forward.add(right).scale(-1).normalize();
+                        case 8 -> right;
+                        case 9 -> forward.add(right).normalize();
+                        case 12 -> forward.scale(-1).add(right).normalize();
+                        default -> Vec3.ZERO;
+                    };
+
+                    lungeVelocity = horizDir.scale(finalMoveStrength).add(0, finalJumpStrength, 0);
+                }
 
                 player.resetFallDistance();
                 player.trackStartFallingPosition();

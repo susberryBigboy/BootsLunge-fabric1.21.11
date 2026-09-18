@@ -20,10 +20,10 @@ public class ConfigServer {
 
     // Directional Jump -------------------------------------
     @SerializedName("directional_jump_move_strength_base")
-    public double directionJumpMoveStrengthBase = 1.0;
+    public double directionJumpMoveStrengthBase = 0.8;
 
     @SerializedName("directional_jump_move_strength_level_multiplier")
-    public double directionJumpMoveStrengthLevelMultiplier = 0.2;
+    public double directionJumpMoveStrengthLevelMultiplier = 0.4;
 
     @SerializedName("directional_jump_move_strength_jump_strength")
     public double directionJumpMoveStrengthJumpStrength = 0.35;
