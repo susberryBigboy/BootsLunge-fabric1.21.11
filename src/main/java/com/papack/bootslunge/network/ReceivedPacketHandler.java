@@ -33,14 +33,13 @@ public class ReceivedPacketHandler {
 
             // 10tickの連射防止クールダウンチェック
             if (player.getCooldowns().isOnCooldown(boots)) return;
-            // 水、マグマ、雪の判定
             // 滑空中はjumpモードは実行不可
             if (player.isFallFlying() && payload.request()) return;
 
             UUID playerId = player.getUUID();
             int currentCount = LUNGE_COUNTS.getOrDefault(playerId, 0);
 
-            // 【重要】残りの使用回数をチェック (レベル回数以上なら空中での発動を拒否)
+            // 残りの使用回数をチェック (レベル回数以上なら拒否)
             if (currentCount >= level + 1) {
                 return;
             }
@@ -50,75 +49,75 @@ public class ReceivedPacketHandler {
                 player.trackStartFallingPosition();
             }
 
+            // =========================================================
+            // 推進力の統一計算
+            // =========================================================
+            // 全モード共通の基本パワーを計算 (レベルと使用回数で拡張)
+            double baseStrength = configServer.lungeBaseStrength
+                    + (level * configServer.lungeLevelMultiplier)
+                    + (currentCount * configServer.lungeCountMultiplier);
+
             Vec3 lungeVelocity;
 
             if (payload.request()) {
-
+                // WASD + Space (または Ctrl+Space) / Spaceのみ
                 boolean hasDirectionInput = payload.direction() != 0;
 
-                // 1. 従来の基準値をそれぞれ計算
-                double baseMoveStrength = hasDirectionInput
-                        ? (configServer.directionJumpMoveStrengthBase + level * configServer.directionJumpMoveStrengthLevelMultiplier)
-                        : 0.0;
-
-                double baseJumpStrength = hasDirectionInput
-                        ? configServer.directionJumpMoveStrengthJumpStrength
-                        : (configServer.noDirectionJumpJumpStrengthBase + (level * configServer.noDirectionJumpJumpStrengthLevelMultiplier) + (currentCount * configServer.noDirectionJumpJumpStrengthCountMultiplier));
-
-                // 2. angle (0°〜90°) に応じた重み付け（ラジアン変換）
-                // 0° のとき: 水平 100% / Y軸 0%
-                // 90° のとき: 水平 0% / Y軸 100%
-                double pitchRad = Math.toRadians(Math.clamp(payload.angle(), 0.0, 90.0));
-
-                double horizontalScale = Math.cos(pitchRad); // 0°で1.0、90°で0.0
-                double verticalScale = Math.sin(pitchRad);   // 0°で0.0、90°で1.0
-
-                // 3. 従来と同じパワー感を維持したまま角度を適用
-                double finalMoveStrength = baseMoveStrength * horizontalScale;
-                double finalJumpStrength = baseJumpStrength * (hasDirectionInput ? verticalScale : 1.0);
-
                 if (!hasDirectionInput) {
-                    lungeVelocity = new Vec3(0, finalJumpStrength, 0);
+                    // 【No Direction Jump】真上(Y軸)へ全パワーを加算
+                    lungeVelocity = new Vec3(0, baseStrength, 0);
                 } else {
+                    // 【Directional Jump】角度(angle: 0〜90)とWASD入力方向へパワーを分解
+                    double pitchRad = Math.toRadians(Math.clamp(payload.angle(), 0.0, 90.0));
+                    double horizontalScale = Math.cos(pitchRad); // 水平方向倍率
+                    double verticalScale = Math.sin(pitchRad);   // Y軸(垂直)方向倍率
+
+                    // プレイヤーの視線（Yaw）に基づく「前(forward)」と「右(right)」の単位ベクトル
                     double yawRad = Math.toRadians(player.getYRot());
                     Vec3 forward = new Vec3(-Math.sin(yawRad), 0, Math.cos(yawRad)).normalize();
                     Vec3 right = new Vec3(-Math.cos(yawRad), 0, -Math.sin(yawRad)).normalize();
 
-                    Vec3 horizDir = switch (payload.direction()) {
-                        case 1 -> forward;
-                        case 2 -> right.scale(-1);
-                        case 3 -> forward.subtract(right).normalize();
-                        case 4 -> forward.scale(-1);
-                        case 6 -> forward.add(right).scale(-1).normalize();
-                        case 8 -> right;
-                        case 9 -> forward.add(right).normalize();
-                        case 12 -> forward.scale(-1).add(right).normalize();
+                    // 方向キーに応じて「生の方向」を合成し、最後に必ず1回だけ normalize() する
+                    Vec3 rawDir = switch (payload.direction()) {
+                        case 1 -> forward;                             // 前
+                        case 2 -> right.reverse();                     // 左
+                        case 3 -> forward.subtract(right);             // 左前
+                        case 4 -> forward.reverse();                   // 後
+                        case 6 -> forward.reverse().subtract(right);   // 左後
+                        case 8 -> right;                               // 右
+                        case 9 -> forward.add(right);                  // 右前
+                        case 12 -> forward.reverse().add(right);        // 右後
                         default -> Vec3.ZERO;
                     };
 
-                    lungeVelocity = horizDir.scale(finalMoveStrength).add(0, finalJumpStrength, 0);
+                    // 確実に長さを 1.0 に正規化
+                    Vec3 horizDir = rawDir.lengthSqr() > 0 ? rawDir.normalize() : Vec3.ZERO;
+
+                    // 水平方向(horizDir * horizontalScale) と 垂直方向(Y * verticalScale) を合成
+                    // (horizontalScale^2 + verticalScale^2 = 1.0 になるため、combinedDir の長さも正確に 1.0 になります)
+                    Vec3 combinedDir = horizDir.scale(horizontalScale).add(0, verticalScale, 0);
+                    lungeVelocity = combinedDir.scale(baseStrength);
                 }
 
                 player.resetFallDistance();
                 player.trackStartFallingPosition();
 
             } else {
-                // Lunge: 視線方向へ推進
-                Vec3 lookVec = player.getForward();
-                double strength = configServer.lungeJumpStrengthBase + (level * configServer.lungeJumpStrengthLevelMultiplier) + (currentCount * configServer.lungeJumpStrengthCountMultiplier);
-                lungeVelocity = lookVec.scale(strength);
+                // 【視線方向 Lunge (Rキー)】視線単位ベクトル (LookVector) に全パワーを加算
+                Vec3 lookVec = player.getForward().normalize();
+                lungeVelocity = lookVec.scale(baseStrength);
             }
 
-            // 水、マグマ、雪に入っている場合
+            // =========================================================
+            // 水、マグマ、雪の減衰処理（既存仕様の維持）
+            // =========================================================
             boolean inLiquidOrSnow = (player.isInLiquid() || player.isInPowderSnow);
 
             Vec3 currentVelocity = player.getDeltaMovement();
             Vec3 newVelocity;
 
             if (inLiquidOrSnow) {
-                // 水中では慣性が強すぎるため、既存の速度を加算せず、
-                // 弱めた Lunge 速度のみに置き換える（または既存速度を強く減衰させてから足す）
-                lungeVelocity = lungeVelocity.scale(configServer.inLiquidLungeVelocityDampingMultiplier); // 半減(0.5)よりもう少し落とす
+                lungeVelocity = lungeVelocity.scale(configServer.inLiquidLungeVelocityDampingMultiplier);
                 newVelocity = currentVelocity.scale(configServer.inLiquidCurrentVelocityDampingMultiplier).add(lungeVelocity);
             } else {
                 newVelocity = currentVelocity.add(lungeVelocity);
@@ -132,10 +131,10 @@ public class ReceivedPacketHandler {
             // 使用回数を +1 して記録
             LUNGE_COUNTS.put(playerId, currentCount + 1);
 
-            // Cooldown (Prevent consecutive execution)
+            // クールダウン (5tick)
             player.getCooldowns().addCooldown(boots, 5);
 
-            // Sounds
+            // 効果音・パーティクル処理
             if (payload.sound()) {
                 player.level().playSound(null,
                         player.getX(), player.getY(), player.getZ(),
@@ -145,8 +144,7 @@ public class ReceivedPacketHandler {
                         0.5F);
             }
 
-            // Particles
-            if (payload.sound()) {
+            if (payload.particle()) {
                 player.level().sendParticles(
                         ParticleTypes.CLOUD,
                         player.getX(), player.getY(), player.getZ(),
