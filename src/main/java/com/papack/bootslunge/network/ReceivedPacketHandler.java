@@ -111,7 +111,7 @@ public class ReceivedPacketHandler {
 
             // Shift Key - Powerful braking
             if (payload.shiftDown()) {
-                newVelocity = new Vec3(newVelocity.x, 0, newVelocity.z);
+                newVelocity = new Vec3(newVelocity.x, 0.05, newVelocity.z); // ちょっとだけ浮かせる効果
             }
 
             // プレイヤーへ速度付与＆同期
@@ -141,13 +141,23 @@ public class ReceivedPacketHandler {
             }
 
             if (payload.particle()) {
-                player.level().sendParticles(
-                        ParticleTypes.CLOUD,
-                        player.getX(), player.getY(), player.getZ(),
-                        3,
-                        0.1, 0.1, 0.1,
-                        0.05
-                );
+                if (payload.shiftDown()) {
+                    player.level().sendParticles(
+                            ParticleTypes.CLOUD,
+                            player.getX(), player.getY(), player.getZ(),
+                            5,
+                            0.2, 0.1, 0.2,
+                            0.08
+                    );
+                } else {
+                    player.level().sendParticles(
+                            ParticleTypes.CLOUD,
+                            player.getX(), player.getY(), player.getZ(),
+                            3,
+                            0.1, 0.1, 0.1,
+                            0.05
+                    );
+                }
             }
         }
     }
