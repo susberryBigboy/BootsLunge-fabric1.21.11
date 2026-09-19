@@ -46,9 +46,24 @@ public class ConfigScreen {
                 .build());
 
         screen.add(entryBuilder
-                .startBooleanToggle(Component.translatable("config.bl.option.quick_directional_jump"), configClient.enableQuickDirectionalJump)
-                .setDefaultValue(DEFAULT_CONFIG.enableQuickDirectionalJump)
-                .setSaveConsumer(newValue -> configClient.enableQuickDirectionalJump = newValue)
+                .startBooleanToggle(Component.translatable("config.bl.option.emergency_brake"), configClient.emergencyBrake)
+                .setDefaultValue(DEFAULT_CONFIG.emergencyBrake)
+                .setSaveConsumer(newValue -> configClient.emergencyBrake = newValue)
+                        .setTooltip(Component.translatable("onfig.bl.tooltip.emergency_brake"))
+                .build());
+
+        screen.add(entryBuilder
+                .startBooleanToggle(Component.translatable("config.bl.option.directional_jump"), configClient.directionalJump)
+                .setDefaultValue(DEFAULT_CONFIG.directionalJump)
+                .setSaveConsumer(newValue -> configClient.directionalJump = newValue)
+                .setTooltip(Component.translatable("onfig.bl.tooltip.directional_jump"))
+                .build());
+
+        screen.add(entryBuilder
+                .startBooleanToggle(Component.translatable("config.bl.option.quick_directional_jump"), configClient.quickDirectionalJump)
+                .setDefaultValue(DEFAULT_CONFIG.quickDirectionalJump)
+                .setSaveConsumer(newValue -> configClient.quickDirectionalJump = newValue)
+                .setTooltip(Component.translatable("onfig.bl.tooltip.quick_directional_jump"))
                 .build());
 
         screen.add(entryBuilder

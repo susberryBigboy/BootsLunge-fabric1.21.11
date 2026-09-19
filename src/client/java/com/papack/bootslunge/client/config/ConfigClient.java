@@ -20,9 +20,9 @@ public class ConfigClient {
     public boolean playSound = true;
     public boolean spawnParticle = true;
 
-    public boolean enableEmergencyBrake = true;
-    public boolean enableDirectionalJump = true;
-    public boolean enableQuickDirectionalJump = true;
+    public boolean emergencyBrake = true;
+    public boolean directionalJump = true;
+    public boolean quickDirectionalJump = true;
 
     public int directionalJumpAngle = 60;
 

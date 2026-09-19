@@ -51,7 +51,7 @@ This mod adds a unique new enchantment exclusive to boots, offering two differen
 
 ### 2. Directional Jump
 
-* **Trigger**: Press the **Jump Key** while holding movement keys in mid-air.
+* **Trigger**: Press the **Jump Key** while holding movement keys in midair.
 
 
 * **Behavior**: Lunges in the direction of your movement keys (`W`, `A`, `S`, `D`) without changing your camera orientation. If no movement keys are pressed, you will lunge vertically upward.
@@ -67,7 +67,7 @@ This mod adds a unique new enchantment exclusive to boots, offering two differen
 * **Trigger**: Press `Ctrl` + **Jump Key** (`Space`).
 
 
-* **Behavior**: Works like Directional Jump, but can be activated **instantly from the ground** without needing to be mid-air first.
+* **Behavior**: Works like Directional Jump, but can be activated **instantly from the ground** without needing to be midair first.
 
 > ⛔ **Restriction**: Cannot be used while equipping an Elytra (regardless of whether you are actively gliding or not).
 ---
@@ -77,7 +77,7 @@ This mod adds a unique new enchantment exclusive to boots, offering two differen
 * **Trigger**: Press `Shift` + **Jump Key** (`Space`).
 
 
-* **Behavior**: When falling from high altitudes, standard lunge propulsion might not fully counter your downward momentum. The Emergency Brake cancels your vertical velocity, applying a hard brake in mid-air.
+* **Behavior**: When falling from high altitudes, standard lunge propulsion might not fully counter your downward momentum. The Emergency Brake cancels your vertical velocity, applying a hard brake in midair.
 
 > ⛔ **Restriction**: Cannot be used while equipping an Elytra (regardless of whether you are actively gliding or not).
 ---

@@ -8,5 +8,8 @@
   "enchantment.bootslunge.boots_lunge": "Boots Lunge",
   "key.category.bootslunge.main": "Boots Lunge",
   "key.desc.bootlunge.config_screen": "Config Screen",
+  "onfig.bl.tooltip.emergency_brake": "",
+  "onfig.bl.tooltip.directional_jump": "",
+  "onfig.bl.tooltip.quick_directional_jump": "",
   "key.desc.bootlunge.lunge_key": "Boots Lunge Key"
 }
