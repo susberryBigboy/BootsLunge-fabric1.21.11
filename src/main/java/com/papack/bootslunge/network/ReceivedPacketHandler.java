@@ -137,20 +137,20 @@ public class ReceivedPacketHandler {
             if (payload.sound()) {
                 player.level().playSound(null,
                         player.getX(), player.getY(), player.getZ(),
-                        SoundEvents.LUNGE_1,
+                        SoundEvents.ENDER_PEARL_THROW,
                         SoundSource.PLAYERS,
-                        1.0F,
+                        0.7F,
                         0.5F);
             }
 
             if (payload.particle()) {
                 if (payload.shiftDown()) {
                     player.level().sendParticles(
-                            ParticleTypes.CLOUD,
+                            ParticleTypes.GLOW,
                             player.getX(), player.getY(), player.getZ(),
-                            5,
-                            0.2, 0.1, 0.2,
-                            0.08
+                            10,
+                            0.1, 0.1, 0.2,
+                            0.2
                     );
                 } else {
                     player.level().sendParticles(
