@@ -49,8 +49,16 @@ public class ConfigScreen {
                 .startBooleanToggle(Component.translatable("config.bl.option.emergency_brake"), configClient.emergencyBrake)
                 .setDefaultValue(DEFAULT_CONFIG.emergencyBrake)
                 .setSaveConsumer(newValue -> configClient.emergencyBrake = newValue)
-                        .setTooltip(Component.translatable("onfig.bl.tooltip.emergency_brake"))
+                .setTooltip(Component.translatable("onfig.bl.tooltip.emergency_brake"))
                 .build());
+
+        screen.add(entryBuilder
+                .startBooleanToggle(Component.translatable("config.bl.option.emergency_brake_auto_option"), configClient.emergencyBrakeAutoOption)
+                .setDefaultValue(DEFAULT_CONFIG.emergencyBrakeAutoOption)
+                .setSaveConsumer(newValue -> configClient.emergencyBrakeAutoOption = newValue)
+                .setTooltip(Component.translatable("onfig.bl.tooltip.emergency_brake"))
+                .build());
+
 
         screen.add(entryBuilder
                 .startBooleanToggle(Component.translatable("config.bl.option.directional_jump"), configClient.directionalJump)

@@ -11,6 +11,7 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -32,6 +33,7 @@ public class BootslungeClient implements ClientModInitializer {
 
     private static boolean wasJumpPressed = false;
     private static int offGroundTicks = 0; // 空中にいる時間をカウント
+    private static int brakeCooldownTicks = 0;
 
     @Override
     public void onInitializeClient() {
@@ -87,31 +89,47 @@ public class BootslungeClient implements ClientModInitializer {
                 offGroundTicks++;
             }
 
+            // ブレーキのクールダウン
+            if (brakeCooldownTicks > 0) {
+                brakeCooldownTicks--;
+            }
+
             // 3. 空中ジャンプ（JumpKey）の処理
             boolean isJumpPressed = client.options.keyJump.isDown();
             boolean isCtrlPressed = client.options.keySprint.isDown();
+            boolean isShiftPressed = player.isShiftKeyDown();
+            boolean canJump = (configClient.directionalJump && !player.onGround() && offGroundTicks >= 3) || (configClient.quickDirectionalJump && isCtrlPressed);
 
-            // 「今キーが押された瞬間」かつ「空中に3Tick（約0.15秒）以上いる時」のみ許可
-            // 地上ジャンプ直後の誤暴発を完全回避します
-            if (isJumpPressed && !wasJumpPressed) {
-                if ((configClient.directionalJump && !player.onGround() && offGroundTicks >= 3)
-                        || (configClient.quickDirectionalJump && isCtrlPressed)) {
-                    int direction = NO_DIRECTION;
-                    direction += client.options.keyUp.isDown() ? 1 : 0;
-                    direction += client.options.keyLeft.isDown() ? 2 : 0;
-                    direction += client.options.keyDown.isDown() ? 4 : 0;
-                    direction += client.options.keyRight.isDown() ? 8 : 0;
+            if (canJump && isJumpPressed) {
+                if (configClient.emergencyBrakeAutoOption && isShiftPressed) {
+                    if (brakeCooldownTicks == 0 && UtilsClient.hasSolidBlockBelow(player, 3)) {
+                        sendJumpPacket(client, player);
+                        brakeCooldownTicks = 20;
+                    }
+                } else {
+                    if (!wasJumpPressed) {
+                        sendJumpPacket(client, player);
 
-                    ClientPlayNetworking.send(new LungePacketPayload(true,
-                            configClient.emergencyBrake && player.isShiftKeyDown(),
-                            configClient.playSound,
-                            configClient.spawnParticle,
-                            direction,
-                            configClient.directionalJumpAngle));
+                    }
                 }
             }
 
             wasJumpPressed = isJumpPressed;
         });
+    }
+
+    private static void sendJumpPacket(Minecraft client, LocalPlayer player) {
+        int direction = NO_DIRECTION;
+        direction += client.options.keyUp.isDown() ? 1 : 0;
+        direction += client.options.keyLeft.isDown() ? 2 : 0;
+        direction += client.options.keyDown.isDown() ? 4 : 0;
+        direction += client.options.keyRight.isDown() ? 8 : 0;
+
+        ClientPlayNetworking.send(new LungePacketPayload(true,
+                configClient.emergencyBrake && player.isShiftKeyDown(),
+                configClient.playSound,
+                configClient.spawnParticle,
+                direction,
+                configClient.directionalJumpAngle));
     }
 }

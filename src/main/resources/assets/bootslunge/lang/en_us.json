@@ -2,14 +2,15 @@
   "config.bl.option.directional_jump": "Directional Jump",
   "config.bl.option.directional_jump_angle": "Directional Jump Angle",
   "config.bl.option.emergency_brake": "Emergency Brake",
+  "config.bl.option.emergency_brake_auto_option": "Automatic braking",
   "config.bl.option.play_sound": "Play Sound",
   "config.bl.option.quick_directional_jump": "Quick Directional Jump",
   "config.bl.option.spawn_particle": "Spawn Particle",
   "enchantment.bootslunge.boots_lunge": "Boots Lunge",
   "key.category.bootslunge.main": "Boots Lunge",
   "key.desc.bootlunge.config_screen": "Config Screen",
-  "onfig.bl.tooltip.emergency_brake": "",
+  "key.desc.bootlunge.lunge_key": "Boots Lunge Key",
   "onfig.bl.tooltip.directional_jump": "",
-  "onfig.bl.tooltip.quick_directional_jump": "",
-  "key.desc.bootlunge.lunge_key": "Boots Lunge Key"
+  "onfig.bl.tooltip.emergency_brake": "",
+  "onfig.bl.tooltip.quick_directional_jump": ""
 }
