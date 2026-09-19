@@ -59,7 +59,6 @@ public class ConfigScreen {
                 .setTooltip(Component.translatable("onfig.bl.tooltip.emergency_brake"))
                 .build());
 
-
         screen.add(entryBuilder
                 .startBooleanToggle(Component.translatable("config.bl.option.directional_jump"), configClient.directionalJump)
                 .setDefaultValue(DEFAULT_CONFIG.directionalJump)
