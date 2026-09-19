@@ -111,7 +111,10 @@ public class ReceivedPacketHandler {
 
             // Shift Key - Powerful braking
             if (payload.shiftDown()) {
-                newVelocity = new Vec3(newVelocity.x, 0.05, newVelocity.z); // ちょっとだけ浮かせる効果
+                newVelocity = new Vec3(
+                        newVelocity.x,
+                        configServer.emergencyBrakeFloatVelocity,   // ちょっとだけ浮かせて視覚的にもブレーキ効果を与える
+                        newVelocity.z);
             }
 
             // プレイヤーへ速度付与＆同期

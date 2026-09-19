@@ -28,6 +28,9 @@ public class ConfigServer {
     @SerializedName("lunge_count_multiplier")
     public double lungeCountMultiplier = 0.3;
 
+    @SerializedName("emergency_brake_float_velocity")
+    public double emergencyBrakeFloatVelocity = 0.05;
+
     // In Liquid / Snow ------------------------------------
     @SerializedName("in_liquid_lunge_velocity_damping_multiplier")
     public double inLiquidLungeVelocityDampingMultiplier = 0.3;
