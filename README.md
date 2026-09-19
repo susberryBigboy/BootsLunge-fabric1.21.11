@@ -1,41 +1,99 @@
-Boots Lunge
+# Boots Lunge
 
-Boots Lungeエンチャントで宙を自在に飛びまわろう！
+> **Fly freely through the air with the Boots Lunge enchantment!**
 
-このモッドではブーツ専用の新たなエンチャントを追加します。
-２つのLungeタイプがあります。
+This mod adds a unique new enchantment exclusive to boots, offering two different types of Lunge mechanics.
 
-- 基本的事項
-・　エンチャントレベルに応じて連続して使用できる回数が変わります。 （エンチャントレベル + 1回）
-・　地面に着地すると、連続使用のカウントはリセットされます。
-・　水、マグマ、雪などで推進力は弱まります。
-・　アイテムの耐久値や空腹/満腹度には影響しません。
+---
 
-- プレイヤーが向いている方向にLungeする。
-Lungeキーを使用します。（デフォルト: R）
-プレイヤーの状態に関係なく、キーを押すと視線方向にLungeします。
+## 🎮 Keybinds (Default)
 
-重要:実行時にfall distanceの値をリセットしません。
+* **Open Config Screen**: `U`
 
-- WASDキーの方向へLungeする。
-(注:この機能は、飛行状態かどうかに関わらず、エリトラ着用中は使用できません。)
-Jumpキーを使用します。
-W,A,S,Dキーを押しながら実行すると、プレイヤーの視線は変えずに、キーの方向にLungeします。
-移動キーを押していない場合は、垂直にLungeします。
-地面にいない状態でのみ発動するので、 プレイヤーが地面にいる場合には、ジャンプキーを２回押してください。
-例：Sキーを押しながらJumpキーを２回押すと、後ろへ素早く移動します。
+* **Boots Lunge**: `R`
 
-重要:実行時にfall distanceの値をリセットします。
+* **Directional Jump**: `WASD` + `Space` (In Air)
 
-- 強力ブレーキ
-高い位置から落下している場合、ジャンプアクションだけでは推進力が足りません。
-shiftを押しながらジャンプすると、強力なブレーキをかけることが可能です。
 
-- 設定変更
-クライアント用
-設定画面を開きます。
-デフォルト”O”キー
+* **Quick Directional Jump**: `Ctrl` + `WASD` + `Space`
 
-サーバー用
-設定ファイルを直接編集して、保存します。
-再起動するか、コマンド"/bl reload"を入力してください。
+* **Emergency Brake**: `Shift` + `Space`
+
+
+---
+
+## ⚡ Basic Rules
+
+* **Usage Limit**: The maximum consecutive uses depend on the enchantment level (`Level + 1` uses).
+
+
+* **Count Reset**: Landing on the ground completely resets your usage count.
+
+
+* **Environmental Resistance**: Propulsion force is reduced in water, lava, and powder snow.
+
+
+* **No Resource Cost**: Does **not** consume item durability or food/saturation levels.
+
+
+
+---
+
+## 🚀 Lunge Modes & Features
+
+### 1. Boots Lunge
+
+* **Trigger**: Press the **Lunge Key** (`R` by default).
+
+
+* **Behavior**: Lunges directly toward the direction your player is currently looking, regardless of your state or ground contact.
+---
+
+### 2. Directional Jump
+
+* **Trigger**: Press the **Jump Key** while holding movement keys in mid-air.
+
+
+* **Behavior**: Lunges in the direction of your movement keys (`W`, `A`, `S`, `D`) without changing your camera orientation. If no movement keys are pressed, you will lunge vertically upward.
+
+
+* **Note**: Since this only triggers while off the ground, press the Jump key twice from the ground (e.g., hold `S` and double-tap `Space` to quickly leap backward).
+
+> ⛔ **Restriction**: Cannot be used while equipping an Elytra (regardless of whether you are actively gliding or not).
+---
+
+### 3. Quick Directional Jump
+
+* **Trigger**: Press `Ctrl` + **Jump Key** (`Space`).
+
+
+* **Behavior**: Works like Directional Jump, but can be activated **instantly from the ground** without needing to be mid-air first.
+
+> ⛔ **Restriction**: Cannot be used while equipping an Elytra (regardless of whether you are actively gliding or not).
+---
+
+### 4. Emergency Brake
+
+* **Trigger**: Press `Shift` + **Jump Key** (`Space`).
+
+
+* **Behavior**: When falling from high altitudes, standard lunge propulsion might not fully counter your downward momentum. The Emergency Brake cancels your vertical velocity, applying a hard brake in mid-air.
+
+> ⛔ **Restriction**: Cannot be used while equipping an Elytra (regardless of whether you are actively gliding or not).
+---
+
+## ⚙️ Configuration
+
+### Client Configuration
+
+* Open the in-game config screen using the designated key (`U` by default).
+
+
+
+### Server Configuration
+
+1. Edit and save the server configuration file (`config_server.json`) located in your config directory.
+
+
+2. Apply changes in-game by restarting the server or executing the command:
+   `/bl reload`

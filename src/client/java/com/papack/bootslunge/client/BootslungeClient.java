@@ -51,7 +51,7 @@ public class BootslungeClient implements ClientModInitializer {
         CONFIG_SCREEN_KEY = KeyBindingHelper.registerKeyBinding(new KeyMapping(
                 KEY_DESC_BOOT_LUNGE_CONFIG_SCREEN,
                 InputConstants.Type.KEYSYM,
-                GLFW.GLFW_KEY_O,
+                GLFW.GLFW_KEY_U,
                 KEY_CATEGORY_BOOT_LUNGE
         ));
 
