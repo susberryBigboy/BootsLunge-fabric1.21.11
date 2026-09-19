@@ -18,7 +18,7 @@ public class ConfigServer {
     private static final Path CONFIG_DIR = FabricLoader.getInstance().getConfigDir().resolve("BootsLunge");
     private static final File FILE = CONFIG_DIR.resolve("config_server.json").toFile();
 
-    // 統一推進力 (Unified Lunge Strength) ---------------------
+    // 推進力 (Unified Lunge Strength) ---------------------
     @SerializedName("lunge_base_strength")
     public double lungeBaseStrength = 0.7;
 
