@@ -2,7 +2,6 @@ package com.papack.bootslunge.client.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.annotations.SerializedName;
 import com.papack.bootslunge.Bootslunge;
 import net.fabricmc.loader.api.FabricLoader;
 
@@ -18,16 +17,13 @@ public class ConfigClient {
     private static final Path CONFIG_DIR = FabricLoader.getInstance().getConfigDir().resolve("BootsLunge");
     private static final File FILE = CONFIG_DIR.resolve("config_client.json").toFile();
 
-    @SerializedName("play_sound")
     public boolean playSound = true;
-
-    @SerializedName("spawn_particle")
     public boolean spawnParticle = true;
 
-    @SerializedName("enable_ctrl_quick_jump")
-    public boolean enableCtrlQuickJump = true;
+    public boolean enableEmergencyBrake = true;
+    public boolean enableDirectionalJump = true;
+    public boolean enableQuickDirectionalJump = true;
 
-    @SerializedName("directional_jump_angle")
     public int directionalJumpAngle = 60;
 
 

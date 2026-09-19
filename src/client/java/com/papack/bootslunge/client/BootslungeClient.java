@@ -94,7 +94,7 @@ public class BootslungeClient implements ClientModInitializer {
             // 「今キーが押された瞬間」かつ「空中に3Tick（約0.15秒）以上いる時」のみ許可
             // 地上ジャンプ直後の誤暴発を完全回避します
             if (isJumpPressed && !wasJumpPressed) {
-                if ((!player.onGround() && offGroundTicks >= 3) || (isCtrlPressed && configClient.enableCtrlQuickJump)) {
+                if ((!player.onGround() && offGroundTicks >= 3) || (isCtrlPressed && configClient.enableQuickDirectionalJump)) {
                     int direction = NO_DIRECTION;
                     direction += client.options.keyUp.isDown() ? 1 : 0;
                     direction += client.options.keyLeft.isDown() ? 2 : 0;
