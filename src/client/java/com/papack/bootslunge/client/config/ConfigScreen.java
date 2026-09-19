@@ -46,7 +46,7 @@ public class ConfigScreen {
                 .build());
 
         screen.add(entryBuilder
-                .startBooleanToggle(Component.translatable("config.bl.option.ctrl_jump"), configClient.enableQuickDirectionalJump)
+                .startBooleanToggle(Component.translatable("config.bl.option.quick_directional_jump"), configClient.enableQuickDirectionalJump)
                 .setDefaultValue(DEFAULT_CONFIG.enableQuickDirectionalJump)
                 .setSaveConsumer(newValue -> configClient.enableQuickDirectionalJump = newValue)
                 .build());
