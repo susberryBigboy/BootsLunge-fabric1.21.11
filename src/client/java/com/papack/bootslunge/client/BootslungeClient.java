@@ -109,7 +109,6 @@ public class BootslungeClient implements ClientModInitializer {
                 } else {
                     if (!wasJumpPressed) {
                         sendJumpPacket(client, player);
-
                     }
                 }
             }
