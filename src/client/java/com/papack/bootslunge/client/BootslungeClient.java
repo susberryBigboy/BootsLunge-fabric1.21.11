@@ -33,7 +33,7 @@ public class BootslungeClient implements ClientModInitializer {
 
     private static boolean wasJumpPressed = false;
     private static int offGroundTicks = 0; // 空中にいる時間をカウント
-    private static int brakeCooldownTicks = 0;
+    private static int brakeCooldownTicks = 0; // Auto Brakeのクールダウン
 
     @Override
     public void onInitializeClient() {
