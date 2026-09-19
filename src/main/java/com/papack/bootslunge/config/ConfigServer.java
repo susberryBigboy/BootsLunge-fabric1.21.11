@@ -20,7 +20,7 @@ public class ConfigServer {
 
     // 推進力 (Unified Lunge Strength) ---------------------
     @SerializedName("lunge_base_strength")
-    public double lungeBaseStrength = 0.7;
+    public double lungeBaseStrength = 0.8;
 
     @SerializedName("lunge_level_multiplier")
     public double lungeLevelMultiplier = 0.2;
