@@ -18,10 +18,12 @@ public class UtilsClient {
     public static boolean hasSolidBlockBelow(Player player, int distance) {
         Level level = player.level();
         BlockPos playerPos = player.blockPosition(); // プレイヤーの足もとの座標
+        int yv = (int) Math.ceil(Math.abs(player.getDeltaMovement().y()));
+        int below = Math.max(yv, distance);
 
         CollisionContext context = CollisionContext.of(player);
 
-        for (int i = 1; i <= distance; i++) {
+        for (int i = 1; i <= below; i++) {
             BlockPos targetPos = playerPos.below(i);
             BlockState state = level.getBlockState(targetPos);
 

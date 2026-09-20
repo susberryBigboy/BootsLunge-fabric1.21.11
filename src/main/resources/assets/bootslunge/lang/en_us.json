@@ -2,15 +2,17 @@
   "config.bl.option.directional_jump": "Directional Jump",
   "config.bl.option.directional_jump_angle": "Directional Jump Angle",
   "config.bl.option.emergency_brake": "Emergency Brake",
-  "config.bl.option.emergency_brake_auto_option": "Automatic braking",
+  "config.bl.option.emergency_brake_auto": "Automatic Emergency Braking",
   "config.bl.option.play_sound": "Play Sound",
   "config.bl.option.quick_directional_jump": "Quick Directional Jump",
   "config.bl.option.spawn_particle": "Spawn Particle",
+  "config.bl.tooltip.directional_jump": "(WASD) + Jump\nActivates only while airborne.\nIf you jump while holding a WASD key, you will jump in that direction.\nIf no WASD key is held, you will jump straight up.\nCannot be used if an Elytra is equipped.",
+  "config.bl.tooltip.directional_jump_angle": "Sets the launch angle for Directional Jump.\n0° : Maximize horizontal speed (Best for distance)\n45° : Balanced height and distance\n90° : Maximize vertical lift (Best for height)",
+  "config.bl.tooltip.emergency_brake": "Shift + Jump\nPress Shift + Jump while airborne to execute a powerful brake.\nHelps stop high-speed fall momentum for a safe landing.",
+  "config.bl.tooltip.emergency_brake_auto": "Shift + Jump\nHold Shift + Jump while falling.\nAutomatically triggers the brake when approaching the ground.",
+  "config.bl.tooltip.quick_directional_jump": "Ctrl + (WASD) + Jump\nWorks similarly to Directional Jump, but can be activated from the ground.\nCannot be used while airborne if an Elytra is equipped.",
   "enchantment.bootslunge.boots_lunge": "Boots Lunge",
   "key.category.bootslunge.main": "Boots Lunge",
   "key.desc.bootlunge.config_screen": "Config Screen",
-  "key.desc.bootlunge.lunge_key": "Boots Lunge Key",
-  "onfig.bl.tooltip.directional_jump": "",
-  "onfig.bl.tooltip.emergency_brake": "",
-  "onfig.bl.tooltip.quick_directional_jump": ""
+  "key.desc.bootlunge.lunge_key": "Boots Lunge Key"
 }

@@ -135,24 +135,37 @@ public class ReceivedPacketHandler {
 
             // 効果音・パーティクル処理
             if (payload.sound()) {
-                player.level().playSound(null,
-                        player.getX(), player.getY(), player.getZ(),
-                        SoundEvents.ENDER_PEARL_THROW,
-                        SoundSource.PLAYERS,
-                        0.7F,
-                        0.5F);
+                if (payload.shiftDown()) {
+                    // Brake
+                    player.level().playSound(null,
+                            player.getX(), player.getY(), player.getZ(),
+                            SoundEvents.WIND_CHARGE_BURST,
+                            SoundSource.PLAYERS,
+                            0.7F,
+                            0.5F);
+                } else {
+                    // Normal
+                    player.level().playSound(null,
+                            player.getX(), player.getY(), player.getZ(),
+                            SoundEvents.WIND_CHARGE_BURST,
+                            SoundSource.PLAYERS,
+                            0.5F,
+                            2.0F);
+                }
             }
 
             if (payload.particle()) {
                 if (payload.shiftDown()) {
+                    // Brake
                     player.level().sendParticles(
-                            ParticleTypes.GLOW,
+                            ParticleTypes.EXPLOSION,
                             player.getX(), player.getY(), player.getZ(),
-                            10,
-                            0.1, 0.1, 0.2,
+                            2,
+                            0.2, 0.1, 0.2,
                             0.2
                     );
                 } else {
+                    // Normal
                     player.level().sendParticles(
                             ParticleTypes.CLOUD,
                             player.getX(), player.getY(), player.getZ(),
