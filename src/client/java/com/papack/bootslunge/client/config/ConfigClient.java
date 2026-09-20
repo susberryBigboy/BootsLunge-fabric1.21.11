@@ -22,7 +22,7 @@ public class ConfigClient {
 
     public boolean emergencyBrake = true;
     public boolean emergencyBrakeAuto = true;
-    public boolean emergencyBrakeDisableDirection = false;
+    public boolean emergencyBrakeDisableDirection = true;
     public boolean directionalJump = true;
     public boolean quickDirectionalJump = true;
 
