@@ -53,9 +53,16 @@ public class ConfigScreen {
                 .build());
 
         screen.add(entryBuilder
-                .startBooleanToggle(Component.translatable("config.bl.option.emergency_brake_auto"), configClient.emergencyBrakeAutoOption)
-                .setDefaultValue(DEFAULT_CONFIG.emergencyBrakeAutoOption)
-                .setSaveConsumer(newValue -> configClient.emergencyBrakeAutoOption = newValue)
+                .startBooleanToggle(Component.translatable("config.bl.option.emergency_brake_disable_direction"), configClient.emergencyBrakeDisableDirection)
+                .setDefaultValue(DEFAULT_CONFIG.emergencyBrakeDisableDirection)
+                .setSaveConsumer(newValue -> configClient.emergencyBrakeDisableDirection = newValue)
+                .setTooltip(Component.translatable("config.bl.tooltip.emergency_brake_disable_direction"))
+                .build());
+
+        screen.add(entryBuilder
+                .startBooleanToggle(Component.translatable("config.bl.option.emergency_brake_auto"), configClient.emergencyBrakeAuto)
+                .setDefaultValue(DEFAULT_CONFIG.emergencyBrakeAuto)
+                .setSaveConsumer(newValue -> configClient.emergencyBrakeAuto = newValue)
                 .setTooltip(Component.translatable("config.bl.tooltip.emergency_brake_auto"))
                 .build());
 

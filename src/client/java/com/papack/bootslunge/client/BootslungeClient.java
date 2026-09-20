@@ -101,7 +101,7 @@ public class BootslungeClient implements ClientModInitializer {
             boolean canJump = (configClient.directionalJump && !player.onGround() && offGroundTicks >= 3) || (configClient.quickDirectionalJump && isCtrlPressed);
 
             if (canJump && isJumpPressed) {
-                if (configClient.emergencyBrakeAutoOption && isShiftPressed) {
+                if (configClient.emergencyBrakeAuto && isShiftPressed) {
                     if (brakeCooldownTicks == 0 && UtilsClient.hasSolidBlockBelow(player, 3)) {
                         sendJumpPacket(client, player);
                         brakeCooldownTicks = 20;
@@ -118,14 +118,19 @@ public class BootslungeClient implements ClientModInitializer {
     }
 
     private static void sendJumpPacket(Minecraft client, LocalPlayer player) {
+
+        boolean isBraking = configClient.emergencyBrake && player.isShiftKeyDown();
+
         int direction = NO_DIRECTION;
-        direction += client.options.keyUp.isDown() ? 1 : 0;
-        direction += client.options.keyLeft.isDown() ? 2 : 0;
-        direction += client.options.keyDown.isDown() ? 4 : 0;
-        direction += client.options.keyRight.isDown() ? 8 : 0;
+        if (!(isBraking && configClient.emergencyBrakeDisableDirection)) {
+            direction += client.options.keyUp.isDown() ? 1 : 0;
+            direction += client.options.keyLeft.isDown() ? 2 : 0;
+            direction += client.options.keyDown.isDown() ? 4 : 0;
+            direction += client.options.keyRight.isDown() ? 8 : 0;
+        }
 
         ClientPlayNetworking.send(new LungePacketPayload(true,
-                configClient.emergencyBrake && player.isShiftKeyDown(),
+                isBraking,
                 configClient.playSound,
                 configClient.spawnParticle,
                 direction,
