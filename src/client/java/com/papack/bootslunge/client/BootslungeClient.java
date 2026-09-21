@@ -32,8 +32,8 @@ public class BootslungeClient implements ClientModInitializer {
     public static ConfigClient DEFAULT_CONFIG;
 
     private static boolean wasJumpPressed = false;
-    private static int offGroundTicks = 0; // 空中にいる時間をカウント
-    private static int brakeCooldownTicks = 0; // Auto Brakeのクールダウン
+    private static int offGroundTicks = 0;
+    private static int brakeCooldownTicks = 0;
 
     @Override
     public void onInitializeClient() {
