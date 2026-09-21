@@ -71,7 +71,7 @@ public class BootslungeClient implements ClientModInitializer {
                 }
             }
 
-            // 1. LUNGE_KEY の処理
+            // LUNGE_KEY
             while (LUNGE_KEY.consumeClick()) {
                 ClientPlayNetworking.send(new LungePacketPayload(
                         false,
@@ -82,19 +82,19 @@ public class BootslungeClient implements ClientModInitializer {
                         0));
             }
 
-            // 2. 空中時間のカウント処理
+            // Airborne Time Count
             if (player.onGround() || player.isInLiquid() || player.isInPowderSnow) {
                 offGroundTicks = 0;
             } else {
                 offGroundTicks++;
             }
 
-            // ブレーキのクールダウン
+            // Brake Cool-Down
             if (brakeCooldownTicks > 0) {
                 brakeCooldownTicks--;
             }
 
-            // 3. 空中ジャンプ（JumpKey）の処理
+            // In-Air Jump (JumpKey)
             boolean isJumpPressed = client.options.keyJump.isDown();
             boolean isCtrlPressed = client.options.keySprint.isDown();
             boolean isShiftPressed = player.isShiftKeyDown();

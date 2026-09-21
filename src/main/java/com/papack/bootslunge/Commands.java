@@ -17,12 +17,12 @@ public class Commands {
                         net.minecraft.commands.Commands.literal("bl")
                                 .requires(source -> source.permissions().hasPermission(Permissions.COMMANDS_ADMIN))
 
-                                // --- 基本・管理コマンド ---
-                                // 設定をデフォルトにリセット（管理者専用）
+                                // --- Administrator Commands ---
+                                // Reset Settings to Default (Administrators Only)
                                 .then(net.minecraft.commands.Commands.literal("reset")
                                         .executes(Commands::resetToDefault))
 
-                                // 設定リロード（管理者専用）
+                                // Reload Settings (Administrators Only)
                                 .then(net.minecraft.commands.Commands.literal("reload")
                                         .executes(Commands::reloadConfig))));
     }

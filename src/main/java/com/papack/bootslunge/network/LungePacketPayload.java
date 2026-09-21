@@ -14,10 +14,8 @@ public record LungePacketPayload(
         int direction,
         int angle) implements CustomPacketPayload {
 
-    // パケット識別用のID
     public static final Type<LungePacketPayload> TYPE = new Type<>(LungePacketConstants.BL_PACKET_ID);
 
-    // データの読み書き方法（Codec）を定義
     public static final StreamCodec<FriendlyByteBuf, LungePacketPayload> CODEC =
             StreamCodec.composite(
                     ByteBufCodecs.BOOL, LungePacketPayload::request,

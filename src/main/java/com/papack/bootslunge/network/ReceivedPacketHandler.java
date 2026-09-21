@@ -31,22 +31,20 @@ public class ReceivedPacketHandler {
 
             if (level <= 0) return;
 
-            // 10tickの連射防止クールダウンチェック
+            // Rapid-Fire Prevention Cooldown Check
             if (player.getCooldowns().isOnCooldown(boots)) return;
-            // 滑空中はjumpモードは実行不可
+            // Jump mode cannot be activated while gliding
             if (player.isFallFlying() && payload.request()) return;
 
             UUID playerId = player.getUUID();
             int currentCount = LUNGE_COUNTS.getOrDefault(playerId, 0);
 
-            // 残りの使用回数をチェック (レベル回数以上なら拒否)
+            // Check the number of remaining uses (if it exceeds the level limit, reject)
             if (currentCount >= level + 1) {
                 return;
             }
 
-            // =========================================================
-            // 1. 純粋な推進力の計算
-            // =========================================================
+            // Calculation of Thrust
             double baseStrength = configServer.lungeBaseStrength
                     + (level * configServer.lungeLevelMultiplier)
                     + (currentCount * configServer.lungeCountMultiplier);
@@ -57,10 +55,10 @@ public class ReceivedPacketHandler {
                 boolean hasDirectionInput = payload.direction() != 0;
 
                 if (!hasDirectionInput) {
-                    // 【No Direction Jump】真上へ発動
+                    // [No Direction Jump] Activate straight up
                     lungeVelocity = new Vec3(0, baseStrength, 0);
                 } else {
-                    // 【Directional Jump】角度と方向に沿って分解
+                    // [Directional Jump] Breakdown by Angle and Direction
                     double pitchRad = Math.toRadians(Math.clamp(payload.angle(), 0.0, 90.0));
                     double horizontalScale = Math.cos(pitchRad);
                     double verticalScale = Math.sin(pitchRad);
@@ -88,14 +86,12 @@ public class ReceivedPacketHandler {
                 }
 
             } else {
-                // 【視線方向 Lunge (Rキー)】
-                Vec3 lookVec = player.getForward().normalize(); // バニラジャンプ分の値を加算
+                // [Look Direction Lunge (R Key)]
+                Vec3 lookVec = player.getForward().normalize(); // Add the value for the Vanilla Jump
                 lungeVelocity = lookVec.scale(baseStrength);
             }
 
-            // =========================================================
-            // 2. 速度の合成とバニラジャンプ重複の除去
-            // =========================================================
+            // Combining Speeds and Removing Duplicate Vanilla Jumps
             boolean inLiquidOrSnow = (player.isInLiquid() || player.isInPowderSnow);
 
             Vec3 velocity = player.getDeltaMovement();
@@ -113,27 +109,27 @@ public class ReceivedPacketHandler {
             if (payload.shiftDown()) {
                 newVelocity = new Vec3(
                         newVelocity.x,
-                        configServer.emergencyBrakeFloatVelocity,   // ちょっとだけ浮かせて視覚的にもブレーキ効果を与える
+                        configServer.emergencyBrakeFloatVelocity,   // Raise it just a little to create a visual braking effect
                         newVelocity.z);
             }
 
-            // 落下ダメージがウィンドチャージ使用時と同じような挙動になるようにセット
+            // Set it so that fall damage behaves similarly to when using Wind Charge
             player.setIgnoreFallDamageFromCurrentImpulse(true);
             player.currentImpulseImpactPos = player.position();
             player.resetFallDistance();
 
-            // プレイヤーへ速度付与＆同期
+            //Grant Speed to Players & Synchronize
             player.setDeltaMovement(newVelocity);
             player.hurtMarked = true;
             player.connection.send(new ClientboundSetEntityMotionPacket(player));
 
-            // 使用回数を +1 して記録
+            // Increase the usage count by 1 and record it
             LUNGE_COUNTS.put(playerId, currentCount + 1);
 
-            // クールダウン (5tick)
+            // Cooldown
             player.getCooldowns().addCooldown(boots, 5);
 
-            // 効果音・パーティクル処理
+            // Sounds , Particles
             if (payload.sound()) {
                 if (payload.shiftDown()) {
                     // Brake

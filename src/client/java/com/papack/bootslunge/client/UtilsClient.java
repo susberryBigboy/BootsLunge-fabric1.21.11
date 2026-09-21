@@ -9,15 +9,15 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 public class UtilsClient {
 
     /**
-     * プレイヤーの足もと（直下 1～3 ブロック）に衝突可能なブロック（ハーフブロック、階段含む）があるか判定する
+     * Checks whether there are any collidable blocks (including half-blocks and stairs) at the player's feet (1–3 blocks directly below).
      *
-     * @param player   対象のプレイヤー
-     * @param distance 下方向にチェックする範囲（例: 3）
-     * @return 衝突できるブロックが存在すれば true
+     * @param player   Target Player
+     * @param distance Range to check downward (e.g., 3)
+     * @return True if there are blocks that can collide
      */
     public static boolean hasSolidBlockBelow(Player player, int distance) {
         Level level = player.level();
-        BlockPos playerPos = player.blockPosition(); // プレイヤーの足もとの座標
+        BlockPos playerPos = player.blockPosition(); // player foot coordinates
         int yv = (int) Math.ceil(Math.abs(player.getDeltaMovement().y()));
         int below = Math.max(yv, distance);
 
@@ -27,7 +27,7 @@ public class UtilsClient {
             BlockPos targetPos = playerPos.below(i);
             BlockState state = level.getBlockState(targetPos);
 
-            // 衝突判定（CollisionShape）を持ち、通り抜けられないブロックかをチェック
+            // Checks whether a block has a collision shape (CollisionShape) and cannot be passed through
             if (!state.getCollisionShape(level, targetPos, context).isEmpty()) {
                 return true;
             }
