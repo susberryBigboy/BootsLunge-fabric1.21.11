@@ -45,7 +45,7 @@ public class ReceivedPacketHandler {
             }
 
             // =========================================================
-            // 1. 純粋な推進力の計算（補正なしの統一値）
+            // 1. 純粋な推進力の計算
             // =========================================================
             double baseStrength = configServer.lungeBaseStrength
                     + (level * configServer.lungeLevelMultiplier)
