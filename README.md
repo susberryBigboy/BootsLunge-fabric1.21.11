@@ -14,7 +14,6 @@ This mod adds a unique new enchantment exclusive to boots, offering two differen
 
 * **Directional Jump**: `WASD` + `Space` (In Air)
 
-
 * **Quick Directional Jump**: `Ctrl` + `WASD` + `Space`
 
 * **Emergency Brake**: `Shift` + `Space`
@@ -69,7 +68,7 @@ This mod adds a unique new enchantment exclusive to boots, offering two differen
 
 * **Behavior**: Works like Directional Jump, but can be activated **instantly from the ground** without needing to be midair first.
 
-> ⛔ **Restriction**: Cannot be used while equipping an Elytra (regardless of whether you are actively gliding or not).
+> ⛔ **Restriction**: Cannot be used while airborne if an Elytra is equipped.
 ---
 
 ### 4. Emergency Brake
