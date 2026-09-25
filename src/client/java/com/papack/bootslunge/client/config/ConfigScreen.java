@@ -90,6 +90,25 @@ public class ConfigScreen {
                 .build()
         );
 
+        screen.add(entryBuilder
+                .startFloatField(Component.translatable("config.bl.option.directional_jump_adjustment"), configClient.powerAdjustmentDirection)
+                .setDefaultValue(DEFAULT_CONFIG.powerAdjustmentDirection)
+                .setSaveConsumer(newValue -> configClient.powerAdjustmentDirection = newValue)
+                .setMin(0.1f)
+                .setMax(1.0f)
+                .build()
+        );
+
+        screen.add(entryBuilder
+                .startFloatField(Component.translatable("config.bl.option.lunge_jump_adjustment"), configClient.powerAdjustmentLunge)
+                .setDefaultValue(DEFAULT_CONFIG.powerAdjustmentLunge)
+                .setSaveConsumer(newValue -> configClient.powerAdjustmentLunge = newValue)
+                .setMin(0.1f)
+                .setMax(1.0f)
+                .build()
+        );
+
+
         // SET ENTRY --------------------------------------------
         generalConfig.addEntry(screen.build());
 

@@ -27,6 +27,8 @@ public class ConfigClient {
     public boolean quickDirectionalJump = true;
 
     public int directionalJumpAngle = 60;
+    public float powerAdjustmentLunge = 1.0f;
+    public float powerAdjustmentDirection = 1.0f;
 
     public static ConfigClient load() {
         if (FILE.exists()) {

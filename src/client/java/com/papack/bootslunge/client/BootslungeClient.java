@@ -79,7 +79,8 @@ public class BootslungeClient implements ClientModInitializer {
                         configClient.playSound,
                         configClient.spawnParticle,
                         NO_DIRECTION,
-                        0));
+                        0,
+                        configClient.powerAdjustmentLunge));
             }
 
             // Airborne Time Count
@@ -134,6 +135,7 @@ public class BootslungeClient implements ClientModInitializer {
                 configClient.playSound,
                 configClient.spawnParticle,
                 direction,
-                configClient.directionalJumpAngle));
+                configClient.directionalJumpAngle,
+                configClient.powerAdjustmentDirection));
     }
 }

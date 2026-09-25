@@ -1,9 +1,11 @@
 {
   "config.bl.option.directional_jump": "Directional Jump",
+  "config.bl.option.directional_jump_adjustment": "Directional Jump Strength Multiplier <0.1 .. 1.0>",
   "config.bl.option.directional_jump_angle": "Directional Jump Angle",
   "config.bl.option.emergency_brake": "Emergency Brake",
   "config.bl.option.emergency_brake_auto": "Automatic Emergency Braking",
   "config.bl.option.emergency_brake_disable_direction": "Ignore Direction Input on Brake",
+  "config.bl.option.lunge_jump_adjustment": "Lunge Jump Strength Multiplier <0.1 .. 1.0>",
   "config.bl.option.play_sound": "Play Sound",
   "config.bl.option.quick_directional_jump": "Quick Directional Jump",
   "config.bl.option.spawn_particle": "Spawn Particle",

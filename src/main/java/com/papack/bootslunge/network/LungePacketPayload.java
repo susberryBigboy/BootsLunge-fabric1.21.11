@@ -12,7 +12,8 @@ public record LungePacketPayload(
         boolean sound,
         boolean particle,
         int direction,
-        int angle) implements CustomPacketPayload {
+        int angle,
+        float adjustment) implements CustomPacketPayload {
 
     public static final Type<LungePacketPayload> TYPE = new Type<>(LungePacketConstants.BL_PACKET_ID);
 
@@ -24,6 +25,7 @@ public record LungePacketPayload(
                     ByteBufCodecs.BOOL, LungePacketPayload::particle,
                     ByteBufCodecs.INT, LungePacketPayload::direction,
                     ByteBufCodecs.INT, LungePacketPayload::angle,
+                    ByteBufCodecs.FLOAT,LungePacketPayload::adjustment,
                     LungePacketPayload::new
             );
 
