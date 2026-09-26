@@ -43,7 +43,7 @@ This mod adds a unique new enchantment exclusive to boots, offering two differen
 * Loot Chests: Found as enchanted books or pre-enchanted boots in generated structure chests (dungeons, temples, fortresses, etc.).
 
 
-* Trading: Can be obtained by trading with Librarian villagers or purchased as pre-enchanted boots from armorers.
+* Trading: Can be obtained through trading with villagers.
 
 ---
 
