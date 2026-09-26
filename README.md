@@ -81,6 +81,14 @@ This mod adds a unique new enchantment exclusive to boots, offering two differen
 > ⛔ **Restriction**: Cannot be used while equipping an Elytra (regardless of whether you are actively gliding or not).
 ---
 
+### 5. Auto Emergency Brake
+* **Trigger**: Press and hold `Shift` + **Jump Key** (`Space`).
+
+* **Behavior**: If you hold the keys while falling, it automatically triggers right before impact to protect you from fall damage. Enabled by default.
+
+> ⛔ **Restriction**: Cannot be used while equipping an Elytra (regardless of whether you are actively gliding or not).
+---
+
 ## ⚙️ Configuration
 
 ### Client Configuration
