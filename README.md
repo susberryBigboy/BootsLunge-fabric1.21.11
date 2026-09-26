@@ -7,12 +7,16 @@ This mod adds a unique new enchantment exclusive to boots, offering two differen
 ---
 
 ## 📦 Installation & Requirements
-### Client Side:
-* Cloth Config API (Required)
-* Mod Menu (Optional - Useful for accessing the config screen directly from the mod list)
+### Requirements
+* **Client Side:**
+  - Cloth Config API (Required)
+  - Mod Menu (Optional - Useful for accessing the config screen directly from the mod list)
 
-### Server Side:
-* Cloth Config API is NOT required on the server side.
+* **Server Side:**
+  - Cloth Config API is NOT required on the server side.
+
+### Multiplayer
+* For multiplayer, this mod must be installed on both the server and client to function properly.
 
 ---
 
