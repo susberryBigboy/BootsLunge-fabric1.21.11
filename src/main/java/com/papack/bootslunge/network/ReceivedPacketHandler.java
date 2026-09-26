@@ -45,9 +45,10 @@ public class ReceivedPacketHandler {
             }
 
             // Calculation of Thrust
+            double adjustment = Math.clamp(payload.adjustment(), 0.1, 1.0);
             double baseStrength = (configServer.lungeBaseStrength
                     + (level * configServer.lungeLevelMultiplier)
-                    + (currentCount * configServer.lungeCountMultiplier)) * payload.adjustment();
+                    + (currentCount * configServer.lungeCountMultiplier)) * adjustment;
 
             Vec3 lungeVelocity;
 
