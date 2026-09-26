@@ -60,8 +60,6 @@ This mod adds a unique new enchantment exclusive to boots, offering two differen
 
 * **No Resource Cost**: Does **not** consume item durability or food/saturation levels.
 
-
-
 ---
 
 ## 🚀 Lunge Modes & Features
