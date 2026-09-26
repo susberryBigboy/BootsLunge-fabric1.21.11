@@ -123,7 +123,6 @@
 - Open the in-game config screen using the designated key (`U` by default).
 
 
-
 ### Server Configuration
 
 1. Edit and save the server configuration file (`config_server.json`) located in your config directory.
