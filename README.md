@@ -35,6 +35,7 @@ This mod adds a unique new enchantment exclusive to boots, offering two differen
 ---
 
 ## ✨ How to Obtain
+
 **The Boots Lunge enchantment can be obtained through standard gameplay in the following ways:**
 
 * Enchanting Table: Can be applied directly to boots using an Enchanting Table.
