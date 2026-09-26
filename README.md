@@ -28,9 +28,11 @@ This mod adds a unique new enchantment exclusive to boots, offering two differen
 
 * **Directional Jump**: `WASD` + `Space` (In Air)
 
-* **Quick Directional Jump**: `Ctrl` + `WASD` + `Space`
+* **Quick Directional Jump**: `Ctrl` + `WASD` + `Space` (On Ground)
 
-* **Emergency Brake**: `Shift` + `Space`
+* **Emergency Brake**: `Shift` + `Space` (While Falling)
+
+* **Auto Emergency Brake**: Hold `Shift` + `Space` (While Falling)
 
 ---
 
@@ -41,7 +43,7 @@ This mod adds a unique new enchantment exclusive to boots, offering two differen
 * Enchanting Table: Can be applied directly to boots using an Enchanting Table.
 
 
-* Loot Chests: Found as enchanted books or pre-enchanted boots in generated structure chests (dungeons, temples, fortresses, etc.).
+* Loot Chests: Found as enchanted books or pre-enchanted boots in generated structure chests.
 
 
 * Trading: Can be obtained through trading with villagers.
