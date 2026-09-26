@@ -2,7 +2,7 @@
 
 > **Fly freely through the air with the Boots Lunge enchantment!**
 
-This mod adds a unique new enchantment exclusive to boots, offering two different types of Lunge mechanics.
+**This mod adds a unique enchantment exclusive to boots that enables multi-directional lunges and consecutive jumps.**
 
 ---
 
