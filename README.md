@@ -32,6 +32,18 @@ This mod adds a unique new enchantment exclusive to boots, offering two differen
 
 * **Emergency Brake**: `Shift` + `Space`
 
+---
+
+## ✨ How to Obtain
+**The Boots Lunge enchantment can be obtained through standard gameplay in the following ways:**
+
+* Enchanting Table: Can be applied directly to boots using an Enchanting Table.
+
+
+* Loot Chests: Found as enchanted books or pre-enchanted boots in generated structure chests (dungeons, temples, fortresses, etc.).
+
+
+* Trading: Can be obtained by trading with Librarian villagers or purchased as pre-enchanted boots from armorers.
 
 ---
 
